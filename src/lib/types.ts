@@ -16,4 +16,5 @@ export interface Recipe {
   isFavorite: boolean;
   ingredients: string[];
   instructions?: string[]; // Optional for now
+  isOwner?: boolean;
 }

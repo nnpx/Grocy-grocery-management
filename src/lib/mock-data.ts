@@ -24,6 +24,7 @@ export const mockRecipes: Recipe[] = [
     totalFavorites: 132,
     isFavorite: true,
     ingredients: ['Avocado', 'Bread', 'Chili Flakes'],
+    isOwner: true,
   },
   {
     id: 2,
@@ -54,6 +55,7 @@ export const mockRecipes: Recipe[] = [
     totalFavorites: 401,
     isFavorite: true,
     ingredients: ['Eggs', 'Mascarpone', 'Coffee', 'Ladyfingers'],
+    isOwner: true,
   },
   {
     id: 5,
@@ -94,5 +96,6 @@ export const mockRecipes: Recipe[] = [
     totalFavorites: 350,
     isFavorite: false,
     ingredients: ['Chocolate', 'Butter', 'Eggs', 'Sugar'],
+    isOwner: true,
   },
 ];
