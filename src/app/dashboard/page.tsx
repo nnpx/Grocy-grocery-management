@@ -27,7 +27,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="container mx-auto space-y-8">
+    <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-headline font-bold text-foreground">Welcome, {userName}!</h1>
         <p className="text-muted-foreground">Here’s what’s happening in your kitchen today.</p>

@@ -21,6 +21,7 @@ import { Badge } from '@/components/ui/badge';
 import { getExpiryStatus } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { format } from 'date-fns';
+import { Card } from '@/components/ui/card';
 
 interface GroceryItemsClientProps {
   items: GroceryItem[];
@@ -69,7 +70,7 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h1 className="text-2xl font-bold font-headline">My Grocery Items</h1>
         <div className="flex items-center gap-2">
@@ -78,7 +79,7 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
             <Input
               type="search"
               placeholder="Search items..."
-              className="pl-8 sm:w-[300px]"
+              className="pl-8 w-full sm:w-[300px]"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -185,10 +186,3 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
     </div>
   );
 }
-
-// Dummy Card component for structure
-const Card = ({ className, children }: { className?: string, children: React.ReactNode }) => (
-    <div className={`border bg-card text-card-foreground shadow-sm ${className}`}>
-        {children}
-    </div>
-);
