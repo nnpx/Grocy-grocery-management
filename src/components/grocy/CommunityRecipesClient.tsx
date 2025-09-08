@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search } from 'lucide-react';
 import { RecipeCard } from './RecipeCard';
+import { Label } from '../ui/label';
 
 interface CommunityRecipesClientProps {
   recipes: Recipe[];
@@ -59,37 +60,46 @@ export function CommunityRecipesClient({ recipes: initialRecipes }: CommunityRec
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 md:flex-row">
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Filter by category" />
-          </SelectTrigger>
-          <SelectContent>
-            {recipeCategories.map(cat => (
-              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={country} onValueChange={setCountry}>
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Filter by country" />
-          </SelectTrigger>
-          <SelectContent>
-            {recipeCountries.map(c => (
-              <SelectItem key={c} value={c}>{c}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={sort} onValueChange={setSort}>
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="newest">Newest First</SelectItem>
-            <SelectItem value="favorites">Most Favorites</SelectItem>
-            <SelectItem value="oldest">Oldest</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col gap-4 md:flex-row md:items-end">
+        <div className="grid gap-2">
+          <Label>Category</Label>
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger className="w-full md:w-[200px]">
+              <SelectValue placeholder="Filter by category" />
+            </SelectTrigger>
+            <SelectContent>
+              {recipeCategories.map(cat => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid gap-2">
+          <Label>Country</Label>
+          <Select value={country} onValueChange={setCountry}>
+            <SelectTrigger className="w-full md:w-[200px]">
+              <SelectValue placeholder="Filter by country" />
+            </SelectTrigger>
+            <SelectContent>
+              {recipeCountries.map(c => (
+                <SelectItem key={c} value={c}>{c}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid gap-2">
+          <Label>Sort by</Label>
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger className="w-full md:w-[200px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest First</SelectItem>
+              <SelectItem value="favorites">Most Favorites</SelectItem>
+              <SelectItem value="oldest">Oldest</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
         {sortedRecipes.length > 0 ? (
