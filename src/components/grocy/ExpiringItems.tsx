@@ -3,6 +3,7 @@ import type { getExpiryStatus } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 type ExpiringItem = GroceryItem & { status: ReturnType<typeof getExpiryStatus> };
 
@@ -16,6 +17,12 @@ const variantToBgColor = {
   primary: 'bg-primary',
 };
 
+const variantToBorderColor = {
+    destructive: 'border-destructive/50',
+    accent: 'border-accent/50',
+    primary: 'border-primary/50',
+}
+
 export function ExpiringItems({ items }: ExpiringItemsProps) {
   return (
     <div>
@@ -25,7 +32,7 @@ export function ExpiringItems({ items }: ExpiringItemsProps) {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {items.map(item => (
-            <Card key={item.id} className="rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+            <Card key={item.id} className={cn("rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between border-2", variantToBorderColor[item.status.variant])}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg font-headline">{item.name}</CardTitle>
                 <Badge variant="secondary" className="w-fit">{item.category}</Badge>
