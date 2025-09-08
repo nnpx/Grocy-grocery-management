@@ -23,7 +23,7 @@ const pathToTitle: Record<string, string> = {
     '/dashboard/groceries': 'My Groceries',
     '/dashboard/recipes': 'Community Recipes',
     '/dashboard/my-recipes': 'My Recipes',
-    '/dashboard/favorites': '',
+    '/dashboard/favorites': 'My Favorite',
     '/dashboard/settings': 'Settings',
 };
 
@@ -85,7 +85,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="My Favorite" isActive={pathname === '/dashboard/favorites'}>
+                <SidebarMenuButton asChild tooltip="My Favorites" isActive={pathname === '/dashboard/favorites'}>
                   <Link href="/dashboard/favorites">
                     <Heart />
                     <span>My Favorite</span>
@@ -129,7 +129,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <div className="md:hidden pb-4">
               <SidebarTrigger />
             </div>
-            <main className="flex-1">
+            <main className="flex-1 w-full">
                 {children}
             </main>
         </SidebarInset>
