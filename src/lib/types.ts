@@ -9,6 +9,7 @@ export interface GroceryItem {
 export interface Recipe {
   id: number;
   title: string;
+  description?: string;
   category: 'Vegan' | 'Halal' | 'Gluten-Free' | 'Quick & Easy' | 'Dessert';
   country: string;
   imageUrl: string;

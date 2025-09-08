@@ -52,8 +52,8 @@ export function MyRecipeCard({ recipe, onEdit, onDelete }: MyRecipeCardProps) {
                     </div>
                 </div>
                 <h3 className="text-lg font-headline font-bold pt-2 flex-grow">{recipe.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                    A delicious recipe to try out with your fresh ingredients.
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                    {recipe.description || 'A delicious recipe to try out with your fresh ingredients.'}
                 </p>
             </CardContent>
         </Link>

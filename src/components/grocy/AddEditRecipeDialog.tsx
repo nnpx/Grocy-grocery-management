@@ -31,6 +31,7 @@ type FormData = Omit<Recipe, 'id' | 'totalFavorites' | 'isFavorite' | 'isOwner'>
 
 const emptyForm: FormData = {
   title: '',
+  description: '',
   category: 'Quick & Easy',
   country: 'International',
   imageUrl: '',
@@ -46,6 +47,7 @@ export function AddEditRecipeDialog({ isOpen, onClose, onSave, recipe, categorie
     if (isEditing && recipe) {
       setFormData({
         title: recipe.title,
+        description: recipe.description || '',
         category: recipe.category,
         country: recipe.country,
         imageUrl: recipe.imageUrl,
@@ -101,6 +103,10 @@ export function AddEditRecipeDialog({ isOpen, onClose, onSave, recipe, categorie
                 <div className="grid gap-2">
                     <Label htmlFor="title">Recipe Title</Label>
                     <Input id="title" value={formData.title} onChange={(e) => handleChange('title', e.target.value)} />
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} placeholder="A short and enticing description of your recipe." />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                      <div className="grid gap-2">

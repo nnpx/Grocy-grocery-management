@@ -18,6 +18,7 @@ export const mockRecipes: Recipe[] = [
   {
     id: 1,
     title: 'Spicy Avocado Toast',
+    description: 'A quick and delicious breakfast to kickstart your day with a spicy twist.',
     category: 'Quick & Easy',
     country: 'International',
     imageUrl: 'https://picsum.photos/600/400?food=1',
@@ -29,6 +30,7 @@ export const mockRecipes: Recipe[] = [
   {
     id: 2,
     title: 'Grilled Chicken Salad',
+    description: 'A healthy and satisfying salad with perfectly grilled chicken and fresh vegetables.',
     category: 'Halal',
     country: 'American',
     imageUrl: 'https://picsum.photos/600/400?food=2',
@@ -39,6 +41,7 @@ export const mockRecipes: Recipe[] = [
   {
     id: 3,
     title: 'Creamy Tomato Soup',
+    description: 'A comforting and rich tomato soup that is perfect for a chilly day.',
     category: 'Vegan',
     country: 'Italian',
     imageUrl: 'https://picsum.photos/600/400?food=3',
@@ -49,6 +52,7 @@ export const mockRecipes: Recipe[] = [
   {
     id: 4,
     title: 'Classic Tiramisu',
+    description: 'An elegant and rich layered Italian dessert made with coffee, mascarpone, and cocoa.',
     category: 'Dessert',
     country: 'Italian',
     imageUrl: 'https://picsum.photos/600/400?food=4',
@@ -60,6 +64,7 @@ export const mockRecipes: Recipe[] = [
   {
     id: 5,
     title: 'Cheesy Omelette',
+    description: 'A fluffy and cheesy omelette that makes for a perfect and quick breakfast.',
     category: 'Quick & Easy',
     country: 'French',
     imageUrl: 'https://picsum.photos/600/400?food=5',
@@ -70,6 +75,7 @@ export const mockRecipes: Recipe[] = [
   {
     id: 6,
     title: 'Lentil Shepherd\'s Pie',
+    description: 'A hearty and wholesome vegan version of the classic Shepherd\'s Pie.',
     category: 'Vegan',
     country: 'International',
     imageUrl: 'https://picsum.photos/600/400?food=6',
@@ -80,6 +86,7 @@ export const mockRecipes: Recipe[] = [
   {
     id: 7,
     title: 'Chicken Biryani',
+    description: 'A fragrant and flavorful Indian rice dish with spiced chicken and aromatic basmati rice.',
     category: 'Halal',
     country: 'Indian',
     imageUrl: 'https://picsum.photos/600/400?food=7',
@@ -90,6 +97,7 @@ export const mockRecipes: Recipe[] = [
   {
     id: 8,
     title: 'Chocolate Lava Cake',
+    description: 'A decadent and gooey chocolate cake with a molten chocolate center.',
     category: 'Dessert',
     country: 'American',
     imageUrl: 'https://picsum.photos/600/400?food=8',
