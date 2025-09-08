@@ -33,10 +33,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Groceries">
+                <SidebarMenuButton asChild tooltip="My Groceries">
                   <Link href="/dashboard/groceries">
                     <ShoppingBasket />
-                    <span>Groceries</span>
+                    <span>My Groceries</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
