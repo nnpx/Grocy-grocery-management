@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { mockGroceryItems, mockRecipes } from '@/lib/mock-data';
 import { getExpiryStatus } from '@/lib/utils';
 import { StatCard } from '@/components/grocy/StatCard';
@@ -45,11 +46,13 @@ export default function DashboardPage() {
           icon={<Clock3 className="h-6 w-6 text-accent" />} 
           description="Within 1 week" 
         />
-        <StatCard 
-          title="Favorite Recipes" 
-          value={favoriteRecipesCount.toString()} 
-          icon={<Heart className="h-6 w-6 text-favorite" />} 
-        />
+        <Link href="/dashboard/favorites">
+            <StatCard 
+            title="Favorite Recipes" 
+            value={favoriteRecipesCount.toString()} 
+            icon={<Heart className="h-6 w-6 text-favorite" />} 
+            />
+        </Link>
       </div>
 
       <ExpiringItems items={expiringItems} />

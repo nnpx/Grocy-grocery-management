@@ -96,7 +96,7 @@ export function CommunityRecipesClient({ recipes: initialRecipes }: CommunityRec
             <SelectContent>
               <SelectItem value="newest">Newest First</SelectItem>
               <SelectItem value="favorites">Most Favorites</SelectItem>
-              <SelectItem value="oldest">Oldest</SelectItem>
+              <SelectItem value="oldest">Oldest First</SelectItem>
             </SelectContent>
           </Select>
         </div>
