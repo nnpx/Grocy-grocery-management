@@ -35,11 +35,13 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard 
-          title="Total Groceries" 
-          value={totalGroceries.toString()} 
-          icon={<Package className="h-6 w-6 text-primary" />} 
-        />
+        <Link href="/dashboard/groceries" className="h-full">
+            <StatCard 
+            title="Total Groceries" 
+            value={totalGroceries.toString()} 
+            icon={<Package className="h-6 w-6 text-primary" />} 
+            />
+        </Link>
         <StatCard 
           title="Expiring Soon" 
           value={expiringSoonCount.toString()} 
