@@ -62,7 +62,7 @@ export function CommunityRecipesClient({ recipes: initialRecipes }: CommunityRec
 
       <div className="flex flex-col gap-4 md:flex-row md:items-end">
         <div className="grid gap-2">
-          <Label>Category</Label>
+          <Label>Filter by category</Label>
           <Select value={category} onValueChange={setCategory}>
             <SelectTrigger className="w-full md:w-[200px]">
               <SelectValue placeholder="Filter by category" />
@@ -75,7 +75,7 @@ export function CommunityRecipesClient({ recipes: initialRecipes }: CommunityRec
           </Select>
         </div>
         <div className="grid gap-2">
-          <Label>Country</Label>
+          <Label>Filter by country</Label>
           <Select value={country} onValueChange={setCountry}>
             <SelectTrigger className="w-full md:w-[200px]">
               <SelectValue placeholder="Filter by country" />
