@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PlusCircle, Search, Trash2, Pencil } from 'lucide-react';
 import { AddItemDialog } from './AddItemDialog';
+import { EditItemDialog } from './EditItemDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { GroceryItemCard } from './GroceryItemCard';
 import {
@@ -35,13 +36,24 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
   const [category, setCategory] = useState('All');
   const [sort, setSort] = useState('expiryDate');
   const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState<GroceryItem | null>(null);
   const isMobile = useIsMobile();
 
   const handleAddItem = (newItem: Omit<GroceryItem, 'id'>) => {
     const newId = Math.max(...items.map(i => i.id), 0) + 1;
     setItems([...items, { ...newItem, id: newId }]);
   };
+
+  const handleEditItem = (updatedItem: GroceryItem) => {
+    setItems(items.map(item => item.id === updatedItem.id ? updatedItem : item));
+  };
   
+  const openEditModal = (item: GroceryItem) => {
+    setItemToEdit(item);
+    setEditModalOpen(true);
+  }
+
   const filteredItems = items
     .filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
     .filter(item => category === 'All' || item.category === category);
@@ -116,7 +128,12 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
       {isMobile ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {sortedItems.map(item => (
-            <GroceryItemCard key={item.id} item={item} getCategoryBadgeClass={getCategoryBadgeClass} />
+            <GroceryItemCard 
+              key={item.id} 
+              item={item} 
+              getCategoryBadgeClass={getCategoryBadgeClass}
+              onEdit={() => openEditModal(item)}
+            />
           ))}
         </div>
       ) : (
@@ -153,7 +170,7 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" onClick={() => openEditModal(item)}>
                               <Pencil className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -183,6 +200,19 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
         onAddItem={handleAddItem}
         categories={itemCategories.filter(c => c !== 'All')}
       />
+
+      {itemToEdit && (
+        <EditItemDialog
+            isOpen={isEditModalOpen}
+            onClose={() => {
+                setEditModalOpen(false);
+                setItemToEdit(null);
+            }}
+            onEditItem={handleEditItem}
+            item={itemToEdit}
+            categories={itemCategories.filter(c => c !== 'All')}
+        />
+      )}
     </div>
   );
 }

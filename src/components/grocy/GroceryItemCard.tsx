@@ -12,9 +12,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 interface GroceryItemCardProps {
   item: GroceryItem;
   getCategoryBadgeClass: (category: string) => string;
+  onEdit: () => void;
 }
 
-export function GroceryItemCard({ item, getCategoryBadgeClass }: GroceryItemCardProps) {
+export function GroceryItemCard({ item, getCategoryBadgeClass, onEdit }: GroceryItemCardProps) {
   const status = getExpiryStatus(item.expiryDate);
   const expiryBadgeClass = {
       destructive: 'bg-red-100 text-red-800',
@@ -38,7 +39,7 @@ export function GroceryItemCard({ item, getCategoryBadgeClass }: GroceryItemCard
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={onEdit}>
                         <Pencil className="h-4 w-4" />
                     </Button>
                 </TooltipTrigger>
