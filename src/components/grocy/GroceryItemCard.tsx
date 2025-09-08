@@ -13,9 +13,10 @@ interface GroceryItemCardProps {
   item: GroceryItem;
   getCategoryBadgeClass: (category: string) => string;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
-export function GroceryItemCard({ item, getCategoryBadgeClass, onEdit }: GroceryItemCardProps) {
+export function GroceryItemCard({ item, getCategoryBadgeClass, onEdit, onDelete }: GroceryItemCardProps) {
   const status = getExpiryStatus(item.expiryDate);
   const expiryBadgeClass = {
       destructive: 'bg-red-100 text-red-800',
@@ -47,7 +48,7 @@ export function GroceryItemCard({ item, getCategoryBadgeClass, onEdit }: Grocery
             </Tooltip>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={onDelete}>
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </TooltipTrigger>

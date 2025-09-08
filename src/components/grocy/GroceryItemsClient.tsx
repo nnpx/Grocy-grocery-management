@@ -18,6 +18,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from '@/components/ui/badge';
 import { getExpiryStatus } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -38,6 +48,8 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<GroceryItem | null>(null);
+  const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<GroceryItem | null>(null);
   const isMobile = useIsMobile();
 
   const handleAddItem = (newItem: Omit<GroceryItem, 'id'>) => {
@@ -48,10 +60,23 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
   const handleEditItem = (updatedItem: GroceryItem) => {
     setItems(items.map(item => item.id === updatedItem.id ? updatedItem : item));
   };
+
+  const handleDeleteItem = () => {
+    if (itemToDelete) {
+      setItems(items.filter(item => item.id !== itemToDelete.id));
+      setItemToDelete(null);
+      setDeleteConfirmOpen(false);
+    }
+  };
   
   const openEditModal = (item: GroceryItem) => {
     setItemToEdit(item);
     setEditModalOpen(true);
+  }
+
+  const openDeleteConfirm = (item: GroceryItem) => {
+    setItemToDelete(item);
+    setDeleteConfirmOpen(true);
   }
 
   const filteredItems = items
@@ -133,6 +158,7 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
               item={item} 
               getCategoryBadgeClass={getCategoryBadgeClass}
               onEdit={() => openEditModal(item)}
+              onDelete={() => openDeleteConfirm(item)}
             />
           ))}
         </div>
@@ -178,7 +204,7 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => openDeleteConfirm(item)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -213,6 +239,22 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
             categories={itemCategories.filter(c => c !== 'All')}
         />
       )}
+
+       <AlertDialog open={isDeleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your grocery item
+                "{itemToDelete?.name}" from your list.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteItem}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
     </div>
   );
 }
