@@ -170,7 +170,7 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
           ))}
         </div>
       ) : (
-        <Card className="rounded-2xl">
+        <Card className="rounded-2xl w-full">
           <Table>
             <TableHeader>
               <TableRow>
@@ -258,7 +258,7 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
             </AlertDialogHeader>
             <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteItem}>Delete</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteItem} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
