@@ -10,7 +10,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon, description }: StatCardProps) {
   return (
-    <Card className="rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+    <Card className="rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {icon}

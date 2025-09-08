@@ -46,7 +46,7 @@ export default function DashboardPage() {
           icon={<Clock3 className="h-6 w-6 text-accent" />} 
           description="Within 1 week" 
         />
-        <Link href="/dashboard/favorites">
+        <Link href="/dashboard/favorites" className="h-full">
             <StatCard 
             title="Favorite Recipes" 
             value={favoriteRecipesCount.toString()} 
