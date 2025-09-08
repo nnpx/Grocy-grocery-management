@@ -85,10 +85,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="My Favorite" isActive={pathname === '/dashboard/favorites'}>
+                <SidebarMenuButton asChild tooltip="My Favorites" isActive={pathname === '/dashboard/favorites'}>
                   <Link href="/dashboard/favorites">
                     <Heart />
-                    <span>My Favorite</span>
+                    <span>My Favorites</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

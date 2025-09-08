@@ -5,7 +5,7 @@ import type { GroceryItem } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PlusCircle, Search, Trash2, Pencil } from 'lucide-react';
+import { PlusCircle, Search, Trash2, Pencil, Filter, ArrowUpDown } from 'lucide-react';
 import { AddItemDialog } from './AddItemDialog';
 import { EditItemDialog } from './EditItemDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -33,6 +33,7 @@ import { getExpiryStatus } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
+import { Label } from '../ui/label';
 
 interface GroceryItemsClientProps {
   items: GroceryItem[];
@@ -127,27 +128,33 @@ export function GroceryItemsClient({ items: initialItems }: GroceryItemsClientPr
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 md:flex-row">
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Filter by category" />
-          </SelectTrigger>
-          <SelectContent>
-            {itemCategories.map(cat => (
-              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={sort} onValueChange={setSort}>
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="expiryDate">Expiry Date</SelectItem>
-            <SelectItem value="category">Category</SelectItem>
-            <SelectItem value="name">Name</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col gap-4 md:flex-row md:items-end">
+        <div className="grid gap-2">
+            <Label>Filter by</Label>
+            <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger className="w-full md:w-[200px]">
+                <SelectValue placeholder="Filter by category" />
+            </SelectTrigger>
+            <SelectContent>
+                {itemCategories.map(cat => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+            </SelectContent>
+            </Select>
+        </div>
+        <div className="grid gap-2">
+            <Label>Sort by</Label>
+            <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger className="w-full md:w-[200px]">
+                <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="expiryDate">Expiry Date</SelectItem>
+                <SelectItem value="category">Category</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+            </SelectContent>
+            </Select>
+        </div>
       </div>
 
       {isMobile ? (
