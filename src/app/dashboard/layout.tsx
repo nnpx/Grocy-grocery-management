@@ -13,7 +13,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChefHat, ShoppingBasket, Heart, BookUser, Settings, LogOut } from 'lucide-react';
+import { ChefHat, ShoppingBasket, Heart, BookUser, Settings, LogOut, Users } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const userName = "Casey";
@@ -41,10 +41,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Recipes">
+                <SidebarMenuButton asChild tooltip="Community Recipes">
                   <Link href="/dashboard/recipes">
-                    <ChefHat />
-                    <span>Recipes</span>
+                    <Users />
+                    <span>Community Recipes</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
