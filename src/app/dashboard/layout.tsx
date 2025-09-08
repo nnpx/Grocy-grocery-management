@@ -85,10 +85,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="My Favorites" isActive={pathname === '/dashboard/favorites'}>
+                <SidebarMenuButton asChild tooltip="My Favorite" isActive={pathname === '/dashboard/favorites'}>
                   <Link href="/dashboard/favorites">
                     <Heart />
-                    <span>My Favorites</span>
+                    <span>My Favorite</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -125,11 +125,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
           </SidebarFooter>
         </Sidebar>
-        <SidebarInset>
-            <div className="p-4 sm:p-6 md:hidden">
+        <SidebarInset className="p-4 sm:p-6 flex flex-col w-full">
+            <div className="md:hidden pb-4">
               <SidebarTrigger />
             </div>
-            <main className="flex-1 p-4 sm:p-6">
+            <main className="flex-1">
                 {children}
             </main>
         </SidebarInset>
