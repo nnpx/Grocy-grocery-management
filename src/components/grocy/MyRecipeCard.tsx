@@ -28,7 +28,7 @@ export function MyRecipeCard({ recipe, onEdit, onDelete }: MyRecipeCardProps) {
 
   return (
     <Card className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 group flex flex-col h-full">
-        <Link href={`/dashboard/recipes/${recipe.id}`} className="block">
+        <Link href={`/dashboard/recipes/${recipe.id}`} className="block flex flex-col flex-grow">
             <div className="relative">
                 <Image
                     src={recipe.imageUrl}
@@ -43,7 +43,7 @@ export function MyRecipeCard({ recipe, onEdit, onDelete }: MyRecipeCardProps) {
                     <span>{recipe.totalFavorites}</span>
                 </div>
             </div>
-            <CardContent className="p-4 space-y-2 flex-grow">
+            <CardContent className="p-4 space-y-2 flex-grow flex flex-col">
                 <div className="flex items-start justify-between gap-2">
                     <Badge variant="outline" className={`w-fit ${getCategoryBadgeClass(recipe.category)}`}>{recipe.category}</Badge>
                      <div className="flex items-center gap-1 text-sm text-muted-foreground flex-shrink-0">
@@ -51,7 +51,10 @@ export function MyRecipeCard({ recipe, onEdit, onDelete }: MyRecipeCardProps) {
                         <span>{recipe.country}</span>
                     </div>
                 </div>
-                <h3 className="text-lg font-headline font-bold pt-2">{recipe.title}</h3>
+                <h3 className="text-lg font-headline font-bold pt-2 flex-grow">{recipe.title}</h3>
+                <p className="text-sm text-muted-foreground">
+                    A delicious recipe to try out with your fresh ingredients.
+                </p>
             </CardContent>
         </Link>
         <CardFooter className="flex justify-end gap-1 p-2">
