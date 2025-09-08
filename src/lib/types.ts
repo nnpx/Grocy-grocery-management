@@ -15,4 +15,5 @@ export interface Recipe {
   totalFavorites: number;
   isFavorite: boolean;
   ingredients: string[];
+  instructions?: string[]; // Optional for now
 }
