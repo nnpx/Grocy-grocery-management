@@ -23,7 +23,7 @@ const pathToTitle: Record<string, string> = {
     '/dashboard/groceries': 'My Groceries',
     '/dashboard/recipes': 'Community Recipes',
     '/dashboard/my-recipes': 'My Recipes',
-    '/dashboard/favorites': 'My Favorites',
+    '/dashboard/favorites': '',
     '/dashboard/settings': 'Settings',
 };
 

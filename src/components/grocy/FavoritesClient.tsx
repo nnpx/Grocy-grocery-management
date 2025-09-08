@@ -21,6 +21,9 @@ export function FavoritesClient({ recipes: initialRecipes }: FavoritesClientProp
 
   return (
     <div className="space-y-6 w-full">
+        <div>
+            <h1 className="text-3xl font-bold font-headline">My Favorites</h1>
+        </div>
        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <StatCard
                 title="Total Favorite Recipes"

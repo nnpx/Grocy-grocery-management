@@ -46,7 +46,7 @@ export function CommunityRecipesClient({ recipes: initialRecipes }: CommunityRec
   return (
     <div className="space-y-6 w-full">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-2xl font-bold font-headline">Community Recipes</h1>
+        <h1 className="text-3xl font-bold font-headline">Community Recipes</h1>
         <div className="relative flex-1 md:max-w-xs">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
