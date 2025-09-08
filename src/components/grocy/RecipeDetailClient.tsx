@@ -17,7 +17,7 @@ interface RecipeDetailClientProps {
 
 export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 md:p-6 space-y-6">
+    <div className="w-full max-w-5xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <Button asChild variant="outline" size="icon">
           <Link href="/dashboard/recipes">

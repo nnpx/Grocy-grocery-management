@@ -18,25 +18,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChefHat, ShoppingBasket, Heart, BookUser, Settings, LogOut, Users, Home } from 'lucide-react';
 
-const pathToTitle: Record<string, string> = {
-    '/dashboard': 'Dashboard',
-    '/dashboard/groceries': 'My Groceries',
-    '/dashboard/recipes': 'Community Recipes',
-    '/dashboard/my-recipes': 'My Recipes',
-    '/dashboard/favorites': 'My Favorite',
-    '/dashboard/settings': 'Settings',
-};
-
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const userName = "Casey";
   const pathname = usePathname();
-  
-  const getPageTitle = () => {
-    if (pathname.startsWith('/dashboard/recipes/')) return 'Recipe Details';
-    return pathToTitle[pathname] || 'Grocy';
-  };
-  
-  const pageTitle = getPageTitle();
 
   return (
     <SidebarProvider>
@@ -85,7 +69,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="My Favorites" isActive={pathname === '/dashboard/favorites'}>
+                <SidebarMenuButton asChild tooltip="My Favorite" isActive={pathname === '/dashboard/favorites'}>
                   <Link href="/dashboard/favorites">
                     <Heart />
                     <span>My Favorite</span>
