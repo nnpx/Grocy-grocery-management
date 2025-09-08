@@ -126,10 +126,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
-            <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:px-6">
-                 <SidebarTrigger className="md:hidden" />
-                 <h1 className="text-xl font-headline font-semibold">{pageTitle}</h1>
-            </header>
+            <div className="p-4 sm:p-6 md:hidden">
+              <SidebarTrigger />
+            </div>
             <main className="flex-1 p-4 sm:p-6">
                 {children}
             </main>
