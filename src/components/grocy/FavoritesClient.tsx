@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import type { Recipe } from '@/lib/types';
 import { RecipeCard } from './RecipeCard';
-import { HeartCrack } from 'lucide-react';
+import { Heart, HeartCrack } from 'lucide-react';
 import { Button } from '../ui/button';
+import { StatCard } from './StatCard';
 
 interface FavoritesClientProps {
   recipes: Recipe[];
@@ -20,6 +21,13 @@ export function FavoritesClient({ recipes: initialRecipes }: FavoritesClientProp
 
   return (
     <div className="space-y-6 w-full">
+       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <StatCard
+                title="Total Favorite Recipes"
+                value={recipes.length.toString()}
+                icon={<Heart className="h-6 w-6 text-favorite" />}
+            />
+        </div>
       {recipes.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {recipes.map(recipe => (
