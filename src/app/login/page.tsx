@@ -99,12 +99,6 @@ export default function LoginPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
-                     <div className="flex items-center justify-between text-xs">
-                       <span/>
-                        <Link href="/forgot-password" className="font-semibold text-accent hover:underline">
-                            Forgot password?
-                        </Link>
-                    </div>
                     <div className="relative">
                       <FormControl>
                         <Input
