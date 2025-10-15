@@ -23,7 +23,7 @@ export default function LandingPage() {
             <Link href="/login" className="text-foreground/80 transition-colors hover:text-accent">Login</Link>
           </nav>
           <div className="flex items-center gap-4">
-             <Button asChild className="hidden md:flex tracking-wide uppercase">
+             <Button asChild className="hidden md:flex tracking-wide uppercase hover:bg-accent/90">
                 <Link href="/signup">Sign Up</Link>
             </Button>
             <Button asChild variant="ghost" className="md:hidden">
@@ -44,7 +44,7 @@ export default function LandingPage() {
               Track groceries, avoid waste, and explore community-shared recipes — all in one place.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button asChild size="lg" className="tracking-wide uppercase">
+              <Button asChild size="lg" className="tracking-wide uppercase hover:bg-accent/90">
                 <Link href="/signup">Get Started</Link>
               </Button>
               <Link href="/login" className="text-sm font-semibold leading-6 text-foreground/80 hover:text-accent">
@@ -59,7 +59,7 @@ export default function LandingPage() {
                 alt="A vibrant display of fresh groceries and prepared meals, showcasing the possibilities with Grocy."
                 width={1200}
                 height={600}
-                className="rounded-lg shadow-2xl ring-1 ring-gray-900/10"
+                className="w-full rounded-lg shadow-2xl ring-1 ring-gray-900/10 object-cover"
                 data-ai-hint="vibrant groceries meals"
               />
             </div>
@@ -126,7 +126,7 @@ export default function LandingPage() {
               Ready to waste less and cook more?
             </h2>
             <div className="mt-10">
-              <Button asChild size="lg" className="tracking-wide uppercase">
+              <Button asChild size="lg" className="tracking-wide uppercase hover:bg-accent/90">
                 <Link href="/signup">Sign Up Free</Link>
               </Button>
             </div>
