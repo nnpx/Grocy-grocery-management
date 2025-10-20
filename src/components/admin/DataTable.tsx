@@ -27,7 +27,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Filter } from 'lucide-react';
+import { Filter, ArrowUpDown } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface DataTableProps<TData, TValue> {
@@ -53,7 +53,7 @@ function DataTableColumnHeader<TData, TValue>({
         }
         return [];
     },
-    [column.getFacetedUniqueValues]
+    [column.getFacetedUniqueValues, column.id]
   );
   
   const renderFilter = () => {
@@ -99,6 +99,22 @@ function DataTableColumnHeader<TData, TValue>({
     }
   };
 
+  if (column.id === 'dateAdded') {
+      return (
+        <div className="flex items-center gap-2">
+          <span>{title}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+  }
+
   return (
     <div className="flex items-center gap-2">
       <Button
@@ -107,7 +123,7 @@ function DataTableColumnHeader<TData, TValue>({
       >
         {title}
       </Button>
-      {column.getCanFilter() && column.id !== 'dateAdded' && (
+      {column.getCanFilter() && (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button variant="ghost" size="icon" className="h-6 w-6">
