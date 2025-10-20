@@ -46,9 +46,12 @@ function DataTableColumnHeader<TData, TValue>({
 
   const sortedUniqueValues = useMemo(
     () => {
-        const uniqueValues = column.getFacetedUniqueValues();
-        if (!uniqueValues) return [];
-        return Array.from(uniqueValues.keys()).sort();
+        if (column.id === 'role' || column.id === 'status') {
+            const uniqueValues = column.getFacetedUniqueValues();
+            if (!uniqueValues) return [];
+            return Array.from(uniqueValues.keys()).sort();
+        }
+        return [];
     },
     [column]
   );
