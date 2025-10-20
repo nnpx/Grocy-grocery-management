@@ -16,7 +16,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChefHat, ShoppingBasket, Heart, BookUser, Settings, LogOut, Users, Home } from 'lucide-react';
+import { ChefHat, ShoppingBasket, Heart, BookUser, LogOut, Users, Home } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const userName = "Casey";
@@ -80,14 +80,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
           <SidebarFooter>
             <SidebarMenu>
-              <SidebarMenuItem>
-                 <SidebarMenuButton asChild tooltip="Settings" isActive={pathname === '/dashboard/settings'}>
-                  <Link href="/dashboard/settings">
-                    <Settings />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
                <SidebarMenuItem>
                  <SidebarMenuButton asChild tooltip="Log Out">
                   <Link href="/">
