@@ -30,6 +30,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface UsersManagementProps {
   initialUsers: User[];
@@ -87,10 +88,12 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
       header: 'Role',
       cell: ({ row }) => {
         const role = row.getValue('role') as User['role'];
-        let variant: 'destructive' | 'secondary' | 'default' = 'default';
-        if (role === 'Admin') variant = 'destructive';
-        if (role === 'User') variant = 'secondary';
-        return <Badge variant={variant}>{role}</Badge>
+        const roleColors: Record<User['role'], string> = {
+            Admin: 'bg-destructive/10 text-destructive border-destructive/20',
+            Developer: 'bg-accent/10 text-accent-foreground border-accent/20',
+            User: 'bg-muted text-muted-foreground border-border',
+        };
+        return <Badge variant="outline" className={cn("font-semibold", roleColors[role])}>{role}</Badge>
       }
     },
     {
