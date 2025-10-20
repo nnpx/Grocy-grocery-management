@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import {
+  Column,
   ColumnDef,
   flexRender,
   getCoreRowModel,
@@ -23,17 +24,104 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Filter } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchKey?: string;
 }
+
+function DataTableColumnHeader<TData, TValue>({
+  column,
+  title,
+}: {
+  column: Column<TData, TValue>
+  title: string
+}) {
+  const [open, setOpen] = useState(false);
+
+  const sortedUniqueValues = useMemo(
+    () => Array.from(column.getFacetedUniqueValues().keys()).sort(),
+    [column]
+  );
+  
+  const renderFilter = () => {
+    switch (column.id) {
+      case 'role':
+      case 'status':
+        return (
+          <div className="p-2 space-y-2">
+            <h4 className="font-medium text-sm">Filter by {title}</h4>
+            {sortedUniqueValues.map((value: any) => (
+              <div key={value} className="flex items-center gap-2">
+                 <Checkbox
+                  id={`${column.id}-${value}`}
+                  checked={(column.getFilterValue() as any[])?.includes(value)}
+                  onCheckedChange={(checked) => {
+                    const currentFilter = (column.getFilterValue() as any[]) || [];
+                    if (checked) {
+                      column.setFilterValue([...currentFilter, value]);
+                    } else {
+                      column.setFilterValue(currentFilter.filter((v) => v !== value));
+                    }
+                  }}
+                />
+                <label htmlFor={`${column.id}-${value}`}>{value}</label>
+              </div>
+            ))}
+          </div>
+        );
+      case 'name':
+      case 'email':
+         return (
+             <div className="p-2">
+                <Input
+                    placeholder={`Filter ${title}...`}
+                    value={(column.getFilterValue() as string) ?? ''}
+                    onChange={(e) => column.setFilterValue(e.target.value)}
+                    className="w-full"
+                />
+            </div>
+         )
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        {title}
+      </Button>
+      {column.getCanFilter() && (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-6 w-6">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-56 p-0" align="start">
+            {renderFilter()}
+            {(column.getFilterValue() as any[])?.length > 0 && (
+                <Button variant="ghost" onClick={() => column.setFilterValue(undefined)} className="w-full border-t rounded-t-none">Clear</Button>
+            )}
+          </PopoverContent>
+        </Popover>
+      )}
+    </div>
+  );
+}
+
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  searchKey,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -47,6 +135,7 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     state: {
       sorting,
       columnFilters,
@@ -55,18 +144,6 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-        {searchKey && (
-             <div className="flex items-center py-4">
-                <Input
-                placeholder={`Filter by ${searchKey}...`}
-                value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-                onChange={(event) =>
-                    table.getColumn(searchKey)?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm"
-                />
-            </div>
-        )}
       <Card className="rounded-2xl">
         <Table>
           <TableHeader>
@@ -77,10 +154,12 @@ export function DataTable<TData, TValue>({
                     <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : (
+                          <DataTableColumnHeader
+                            column={header.column}
+                            title={header.column.columnDef.header as string}
+                          />
+                        )}
                     </TableHead>
                   );
                 })}

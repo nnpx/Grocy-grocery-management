@@ -4,10 +4,10 @@ import { useState, useMemo } from 'react';
 import type { User } from '@/lib/admin-types';
 import { DataTable } from './DataTable';
 import { ColumnDef } from '@tanstack/react-table';
-import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
+import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2, Eye, Calendar as CalendarIcon, FilterX } from 'lucide-react';
+import { Pencil, Trash2, Eye } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -29,11 +29,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import type { DateRange } from 'react-day-picker';
 
 interface UsersManagementProps {
   initialUsers: User[];
@@ -47,45 +44,6 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
   const { toast } = useToast();
-  
-  // Filter states
-  const [roleFilter, setRoleFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState<DateRange | undefined>(undefined);
-  const [activeDatePreset, setActiveDatePreset] = useState<string | null>(null);
-
-  const handleDatePreset = (preset: string) => {
-    const today = new Date();
-    setActiveDatePreset(preset);
-    if (preset === 'today') {
-      setDateFilter({ from: today, to: today });
-    } else if (preset === 'week') {
-      setDateFilter({ from: startOfWeek(today), to: endOfWeek(today) });
-    } else if (preset === 'month') {
-      setDateFilter({ from: startOfMonth(today), to: endOfMonth(today) });
-    }
-  };
-
-  const clearFilters = () => {
-    setRoleFilter('all');
-    setStatusFilter('all');
-    setDateFilter(undefined);
-    setActiveDatePreset(null);
-  }
-  
-  const filteredUsers = useMemo(() => {
-    return users.filter(user => {
-      const roleMatch = roleFilter === 'all' || user.role === roleFilter;
-      const statusMatch = statusFilter === 'all' || user.status === statusFilter;
-      const dateMatch = !dateFilter || !dateFilter.from || (
-        isWithinInterval(new Date(user.dateAdded), {
-            start: dateFilter.from,
-            end: dateFilter.to || dateFilter.from
-        })
-      );
-      return roleMatch && statusMatch && dateMatch;
-    });
-  }, [users, roleFilter, statusFilter, dateFilter]);
 
   const handleSave = () => {
     if (selectedUser && editedUser) {
@@ -123,8 +81,16 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
   }
 
   const columns: ColumnDef<User>[] = useMemo(() => [
-    { accessorKey: 'name', header: 'Name' },
-    { accessorKey: 'email', header: 'Email' },
+    { 
+      accessorKey: 'name', 
+      header: 'Name',
+      filterFn: 'includesString',
+    },
+    { 
+      accessorKey: 'email', 
+      header: 'Email',
+      filterFn: 'includesString',
+    },
     {
       accessorKey: 'role',
       header: 'Role',
@@ -136,12 +102,18 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
             User: 'bg-gray-100 text-gray-800 border-gray-200',
         };
         return <Badge variant="outline" className={cn("font-semibold", roleColors[role])}>{role}</Badge>
-      }
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id))
+      },
     },
     {
       accessorKey: 'status',
       header: 'Status',
-      cell: ({ row }) => <Badge variant={row.getValue('status') === 'Active' ? 'default' : 'outline'}>{row.getValue('status')}</Badge>
+      cell: ({ row }) => <Badge variant={row.getValue('status') === 'Active' ? 'default' : 'outline'}>{row.getValue('status')}</Badge>,
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id))
+      }
     },
     {
       accessorKey: 'dateAdded',
@@ -164,83 +136,8 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold font-headline">Users Management</h1>
-
-       <div className="flex flex-wrap items-end gap-4 rounded-lg border p-4">
-            <div className="grid gap-2">
-                <Label>Filter by Role</Label>
-                <Select value={roleFilter} onValueChange={setRoleFilter}>
-                    <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Roles</SelectItem>
-                        <SelectItem value="User">User</SelectItem>
-                        <SelectItem value="Admin">Admin</SelectItem>
-                        <SelectItem value="Developer">Developer</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-             <div className="grid gap-2">
-                <Label>Filter by Status</Label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="Active">Active</SelectItem>
-                        <SelectItem value="Deactivated">Deactivated</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-            <div className="grid gap-2">
-                <Label>Filter by Date Added</Label>
-                <div className="flex items-center gap-2">
-                     <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            id="date"
-                            variant={"outline"}
-                            className={cn(
-                            "w-[240px] justify-start text-left font-normal",
-                            !dateFilter && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {dateFilter?.from ? (
-                            dateFilter.to ? (
-                                <>
-                                {format(dateFilter.from, "LLL dd, y")} -{" "}
-                                {format(dateFilter.to, "LLL dd, y")}
-                                </>
-                            ) : (
-                                format(dateFilter.from, "LLL dd, y")
-                            )
-                            ) : (
-                            <span>Pick a date range</span>
-                            )}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            initialFocus
-                            mode="range"
-                            defaultMonth={dateFilter?.from}
-                            selected={dateFilter}
-                            onSelect={setDateFilter}
-                            numberOfMonths={2}
-                        />
-                        </PopoverContent>
-                    </Popover>
-                    <div className="flex items-center gap-1">
-                        <Button variant={activeDatePreset === 'today' ? 'default' : 'outline'} size="sm" onClick={() => handleDatePreset('today')}>Today</Button>
-                        <Button variant={activeDatePreset === 'week' ? 'default' : 'outline'} size="sm" onClick={() => handleDatePreset('week')}>This Week</Button>
-                        <Button variant={activeDatePreset === 'month' ? 'default' : 'outline'} size="sm" onClick={() => handleDatePreset('month')}>This Month</Button>
-                    </div>
-                </div>
-            </div>
-             <Button variant="ghost" onClick={clearFilters}>
-                <FilterX className="mr-2 h-4 w-4" /> Clear Filters
-            </Button>
-        </div>
       
-      <DataTable columns={columns} data={filteredUsers} searchKey="name" />
+      <DataTable columns={columns} data={users} />
 
       <Dialog open={isModalOpen} onOpenChange={setModalOpen}>
         <DialogContent>
