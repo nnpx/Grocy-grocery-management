@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Column,
   ColumnDef,
@@ -12,6 +12,7 @@ import {
   useReactTable,
   SortingState,
   ColumnFiltersState,
+  getFacetedUniqueValues,
 } from '@tanstack/react-table';
 import {
   Table,
