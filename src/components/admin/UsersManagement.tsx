@@ -89,9 +89,9 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
       cell: ({ row }) => {
         const role = row.getValue('role') as User['role'];
         const roleColors: Record<User['role'], string> = {
-            Admin: 'bg-destructive/10 text-destructive border-destructive/20',
-            Developer: 'bg-accent/10 text-accent-foreground border-accent/20',
-            User: 'bg-muted text-muted-foreground border-border',
+            Admin: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+            Developer: 'bg-blue-100 text-blue-800 border-blue-200',
+            User: 'bg-gray-100 text-gray-800 border-gray-200',
         };
         return <Badge variant="outline" className={cn("font-semibold", roleColors[role])}>{role}</Badge>
       }
