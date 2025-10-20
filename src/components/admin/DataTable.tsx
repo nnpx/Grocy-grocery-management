@@ -53,7 +53,7 @@ function DataTableColumnHeader<TData, TValue>({
         }
         return [];
     },
-    [column]
+    [column.getFacetedUniqueValues]
   );
   
   const renderFilter = () => {
@@ -107,7 +107,7 @@ function DataTableColumnHeader<TData, TValue>({
       >
         {title}
       </Button>
-      {column.getCanFilter() && (
+      {column.getCanFilter() && column.id !== 'dateAdded' && (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button variant="ghost" size="icon" className="h-6 w-6">
