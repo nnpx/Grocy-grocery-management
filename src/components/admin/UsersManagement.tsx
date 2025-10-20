@@ -7,7 +7,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2, Eye } from 'lucide-react';
+import { Pencil, Trash2, Eye, ArrowUpDown } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -84,11 +84,13 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
     { 
       accessorKey: 'name', 
       header: 'Name',
+      enableColumnFilter: true,
       filterFn: 'includesString',
     },
     { 
       accessorKey: 'email', 
       header: 'Email',
+      enableColumnFilter: true,
       filterFn: 'includesString',
     },
     {
@@ -103,6 +105,7 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
         };
         return <Badge variant="outline" className={cn("font-semibold", roleColors[role])}>{role}</Badge>
       },
+      enableColumnFilter: true,
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id))
       },
@@ -111,6 +114,7 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => <Badge variant={row.getValue('status') === 'Active' ? 'default' : 'outline'}>{row.getValue('status')}</Badge>,
+      enableColumnFilter: true,
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id))
       }
@@ -127,7 +131,6 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
         <div className="flex gap-2">
           <Button variant="ghost" size="icon" onClick={() => openSheet(row.original)}><Eye className="h-4 w-4" /></Button>
           <Button variant="ghost" size="icon" onClick={() => openModal(row.original)}><Pencil className="h-4 w-4" /></Button>
-          <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog(row.original)}><Trash2 className="h-4 w-4" /></Button>
         </div>
       ),
     },
