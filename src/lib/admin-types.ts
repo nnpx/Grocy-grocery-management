@@ -2,7 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: 'Admin' | 'User';
+  role: 'Admin' | 'User' | 'Developer';
   status: 'Active' | 'Deactivated';
   dateAdded: string; // ISO string
 }

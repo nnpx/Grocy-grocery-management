@@ -85,7 +85,13 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
     {
       accessorKey: 'role',
       header: 'Role',
-      cell: ({ row }) => <Badge variant={row.getValue('role') === 'Admin' ? 'destructive' : 'secondary'}>{row.getValue('role')}</Badge>
+      cell: ({ row }) => {
+        const role = row.getValue('role') as User['role'];
+        let variant: 'destructive' | 'secondary' | 'default' = 'default';
+        if (role === 'Admin') variant = 'destructive';
+        if (role === 'User') variant = 'secondary';
+        return <Badge variant={variant}>{role}</Badge>
+      }
     },
     {
       accessorKey: 'status',
@@ -132,6 +138,7 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
                 <SelectContent>
                   <SelectItem value="User">User</SelectItem>
                   <SelectItem value="Admin">Admin</SelectItem>
+                  <SelectItem value="Developer">Developer</SelectItem>
                 </SelectContent>
               </Select>
             </div>

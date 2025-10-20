@@ -8,11 +8,12 @@ const generateItems = <T>(count: number, factory: (index: number) => T): T[] => 
 };
 
 // Mock Users
+const roles: User['role'][] = ['Admin', 'Developer', 'User'];
 export const mockAdminUsers: User[] = generateItems(25, i => ({
   id: i + 1,
   name: `User ${i + 1}`,
   email: `user${i + 1}@example.com`,
-  role: i < 2 ? 'Admin' : 'User',
+  role: roles[i % roles.length],
   status: i % 5 === 0 ? 'Deactivated' : 'Active',
   dateAdded: format(subDays(today, Math.floor(Math.random() * 40)), 'yyyy-MM-dd HH:mm:ss'),
 }));
