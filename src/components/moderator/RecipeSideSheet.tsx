@@ -64,7 +64,11 @@ export function RecipeSideSheet({ isOpen, onClose, recipe, onEdit, onDelete }: R
 
              <div>
                 <h3 className="font-semibold text-lg mb-2">Instructions</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">{recipe.instructions}</p>
+                <ol className="space-y-4 list-decimal list-inside">
+                    {recipe.instructions.map((step, i) => (
+                        <li key={i} className="pl-2 text-muted-foreground">{step}</li>
+                    ))}
+                </ol>
             </div>
           </div>
           <SheetFooter className="p-6 pt-0 bg-background sticky bottom-0">

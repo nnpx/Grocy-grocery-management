@@ -17,6 +17,7 @@ const getRandomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.len
 
 export const mockModeratorRecipes: ModeratorRecipe[] = Array.from({ length: 32 }, (_, i) => {
   const user = getRandomItem(users);
+  const cookTime = Math.floor(Math.random() * 30) + 10;
   return {
     id: `recipe_${i + 1}`,
     name: `Gourmet Recipe #${i + 1}`,
@@ -25,8 +26,14 @@ export const mockModeratorRecipes: ModeratorRecipe[] = Array.from({ length: 32 }
     category: getRandomItem(categories),
     country: getRandomItem(countries),
     cook_time: Math.floor(Math.random() * 90) + 15,
+    description: `A delicious and easy-to-make dish that's perfect for a quick weeknight dinner. Flavorful, satisfying, and ready in under ${cookTime + 5} minutes.`,
     ingredients: Array.from({ length: Math.floor(Math.random() * 5) + 4 }, (_, j) => `Ingredient ${j + 1}`),
-    instructions: `Step 1: Do something. Step 2: Do something else. Step 3: Combine everything and cook for ${Math.floor(Math.random() * 30) + 10} minutes. Step 4: Serve and enjoy.`,
+    instructions: [
+        'Do something.',
+        'Do something else.',
+        `Combine everything and cook for ${cookTime} minutes.`,
+        'Serve and enjoy.'
+    ],
     image_url: `https://picsum.photos/seed/${i + 200}/800/600`,
     created_at: i < 5 ? subHours(now, i * 3).toISOString() : subDays(now, i).toISOString(),
   };

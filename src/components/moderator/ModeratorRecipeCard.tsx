@@ -63,7 +63,7 @@ export function ModeratorRecipeCard({
             <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {recipe.cook_time}m</span>
             <span>{recipe.ingredients.length} ingredients</span>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2">{recipe.instructions}</p>
+        <p className="text-sm text-muted-foreground line-clamp-2">{recipe.description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between items-center">
         <div className="text-xs text-muted-foreground">

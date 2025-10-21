@@ -7,7 +7,8 @@ export interface ModeratorRecipe {
   country: 'American' | 'Italian' | 'International' | 'French' | 'Indian' | 'Mexican';
   cook_time: number; // in minutes
   ingredients: string[];
-  instructions: string;
+  instructions: string[];
+  description: string;
   image_url: string;
   created_at: string; // ISO date string
 }
