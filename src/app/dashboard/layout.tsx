@@ -90,10 +90,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </SidebarMenuItem>
             </SidebarMenu>
             <div className="flex items-center gap-3 px-2 py-4">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={`https://i.pravatar.cc/150?u=${userName}`} alt={userName} />
-                <AvatarFallback>{userName.charAt(0)}</AvatarFallback>
-              </Avatar>
               <div className="flex flex-col">
                 <span className="text-sm font-semibold">{userName}</span>
                 <span className="text-xs text-muted-foreground">casey@example.com</span>
