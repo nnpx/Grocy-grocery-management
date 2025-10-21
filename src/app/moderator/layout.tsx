@@ -50,14 +50,6 @@ export default function ModeratorLayout({ children }: { children: ReactNode }) {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Main App">
-                  <Link href="/dashboard">
-                    <Home />
-                    <span>Back to App</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
         </Sidebar>
