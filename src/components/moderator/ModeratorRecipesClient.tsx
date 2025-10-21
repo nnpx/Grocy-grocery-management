@@ -150,7 +150,6 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
             <div className="flex-grow">
                  {/* Filter chips would be rendered here */}
             </div>
-             <Button variant="outline" size="sm"><Upload className="mr-2 h-4 w-4" /> Export CSV</Button>
             <Button 
                 variant="destructive"
                 size="sm"
