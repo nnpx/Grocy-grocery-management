@@ -52,6 +52,10 @@ export function RecipeSideSheet({ isOpen, onClose, recipe, onEdit, onDelete }: R
                 <span className="flex items-center gap-1 text-muted-foreground"><Globe className="w-4 h-4" />{recipe.country}</span>
                 <span className="flex items-center gap-1 text-muted-foreground"><Clock className="w-4 h-4" />{recipe.cook_time} min</span>
             </div>
+            
+            <p className="text-sm text-muted-foreground italic">
+                {recipe.description}
+            </p>
 
             <Separator />
 
