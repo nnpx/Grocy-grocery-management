@@ -13,12 +13,14 @@ import {
   SidebarMenuButton,
   SidebarInset,
   SidebarTrigger,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
-import { ChefHat, BookCopy, BarChart3, Home } from 'lucide-react';
+import { ChefHat, BookCopy, BarChart3, Home, LogOut } from 'lucide-react';
 
 export default function ModeratorLayout({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'recipes';
+  const userName = "Moderator";
 
   return (
     <SidebarProvider>
@@ -52,6 +54,24 @@ export default function ModeratorLayout({ children }: { children: ReactNode }) {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
+          <SidebarFooter>
+            <SidebarMenu>
+               <SidebarMenuItem>
+                 <SidebarMenuButton asChild tooltip="Log Out">
+                  <Link href="/">
+                    <LogOut />
+                    <span>Log Out</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+            <div className="flex items-center gap-3 px-2 py-4">
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold">{userName}</span>
+                <span className="text-xs text-muted-foreground">moderator@example.com</span>
+              </div>
+            </div>
+          </SidebarFooter>
         </Sidebar>
         <SidebarInset className="p-4 sm:p-6 flex flex-col w-full">
             <div className="md:hidden pb-4">

@@ -13,8 +13,9 @@ import {
   SidebarMenuButton,
   SidebarInset,
   SidebarTrigger,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
-import { ChefHat, Users, BookMarked, Globe, LayoutDashboard } from 'lucide-react';
+import { ChefHat, Users, BookMarked, Globe, LayoutDashboard, LogOut } from 'lucide-react';
 import type { User, Recipe, Category, Country } from '@/lib/admin-types';
 import { AdminDashboard } from './AdminDashboard';
 import { UsersManagement } from './UsersManagement';
@@ -60,6 +61,8 @@ export function AdminPageClient({ users, recipes, categories, countries }: Admin
     }
   };
 
+  const userName = "Admin";
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background">
@@ -88,6 +91,24 @@ export function AdminPageClient({ users, recipes, categories, countries }: Admin
               ))}
             </SidebarMenu>
           </SidebarContent>
+          <SidebarFooter>
+            <SidebarMenu>
+               <SidebarMenuItem>
+                 <SidebarMenuButton asChild tooltip="Log Out">
+                  <Link href="/">
+                    <LogOut />
+                    <span>Log Out</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+            <div className="flex items-center gap-3 px-2 py-4">
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold">{userName}</span>
+                <span className="text-xs text-muted-foreground">admin@example.com</span>
+              </div>
+            </div>
+          </SidebarFooter>
         </Sidebar>
         <SidebarInset className="p-4 sm:p-6 flex flex-col w-full">
             <div className="md:hidden pb-4">
