@@ -33,10 +33,9 @@ export function ModeratorStats({ stats }: ModeratorStatsProps) {
             </Button>
         </div>
       
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         <StatCard title="Total Recipes" value={stats.totalRecipes.toString()} icon={<BookCopy className="text-primary" />} />
         <StatCard title="Recipes This Week" value={stats.recipesThisWeek.toString()} icon={<PlusCircle className="text-primary" />} />
-        <StatCard title="Recipes Deleted" value={stats.recipesDeleted.toString()} icon={<Trash2 className="text-destructive" />} />
         <StatCard title="Top Category" value={stats.topCategory.name} description={`${stats.topCategory.count} recipes`} icon={<Trophy className="text-accent" />} />
       </div>
 
