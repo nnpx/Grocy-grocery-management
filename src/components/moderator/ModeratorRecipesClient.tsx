@@ -1,16 +1,12 @@
 
-
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { LayoutGrid, List, Search, Trash2, Upload } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ModeratorRecipe } from '@/lib/moderator-types';
 import { ModeratorRecipeCard } from './ModeratorRecipeCard';
-import { ModeratorRecipeTable } from './ModeratorRecipeTable';
 import { EditRecipeModal } from './EditRecipeModal';
 import { RecipeSideSheet } from './RecipeSideSheet';
 import {
@@ -30,13 +26,9 @@ interface ModeratorRecipesClientProps {
 }
 
 export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRecipesClientProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const [recipes, setRecipes] = useState(initialRecipes);
-  const [view, setView] = useState<'card' | 'table'>(searchParams.get('view') as any || 'card');
   const [search, setSearch] = useState('');
   const [selectedRecipes, setSelectedRecipes] = useState<Set<string>>(new Set());
 
@@ -55,19 +47,6 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
     );
   }, [recipes, search]);
   
-  const createQueryString = (name: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(name, value);
-    return params.toString();
-  };
-
-  const handleViewChange = (newView: 'card' | 'table') => {
-    if (newView) {
-      setView(newView);
-      router.push(`${pathname}?${createQueryString('view', newView)}`, { scroll: false });
-    }
-  };
-  
   const handleSelectRecipe = (recipeId: string, isSelected: boolean) => {
     setSelectedRecipes(prev => {
       const newSet = new Set(prev);
@@ -75,14 +54,6 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
       else newSet.delete(recipeId);
       return newSet;
     });
-  };
-  
-  const handleSelectAll = (isSelected: boolean) => {
-    if (isSelected) {
-      setSelectedRecipes(new Set(filteredRecipes.map(r => r.id)));
-    } else {
-      setSelectedRecipes(new Set());
-    }
   };
 
   const openSheet = (recipe: ModeratorRecipe) => {
@@ -132,27 +103,19 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
     <div className="space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <h1 className="text-3xl font-bold font-headline">Recipes</h1>
-            <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search by name or author..."
-                        className="pl-8 w-full md:w-64"
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                    />
-                </div>
-                <ToggleGroup type="single" value={view} onValueChange={handleViewChange} aria-label="View mode">
-                    <ToggleGroupItem value="card" aria-label="Card view"><LayoutGrid /></ToggleGroupItem>
-                    <ToggleGroupItem value="table" aria-label="Table view"><List /></ToggleGroupItem>
-                </ToggleGroup>
+            <div className="relative flex-1 md:max-w-xs">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                    placeholder="Search by name or author..."
+                    className="pl-8 w-full"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                />
             </div>
         </div>
         
         <div className="flex items-center gap-4">
-            {/* Filters would go here */}
             <div className="flex-grow">
-                 {/* Filter chips would be rendered here */}
             </div>
             <Button 
                 variant="destructive"
@@ -164,32 +127,19 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
             </Button>
         </div>
 
-
-      {view === 'card' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredRecipes.map(recipe => (
+            {filteredRecipes.map(recipe => (
             <ModeratorRecipeCard
-              key={recipe.id}
-              recipe={recipe}
-              onView={() => openSheet(recipe)}
-              onEdit={() => openModal(recipe)}
-              onDelete={() => openDeleteDialog(recipe.id)}
-              isSelected={selectedRecipes.has(recipe.id)}
-              onSelectChange={isSelected => handleSelectRecipe(recipe.id, isSelected)}
+                key={recipe.id}
+                recipe={recipe}
+                onView={() => openSheet(recipe)}
+                onEdit={() => openModal(recipe)}
+                onDelete={() => openDeleteDialog(recipe.id)}
+                isSelected={selectedRecipes.has(recipe.id)}
+                onSelectChange={isSelected => handleSelectRecipe(recipe.id, isSelected)}
             />
-          ))}
+            ))}
         </div>
-      ) : (
-        <ModeratorRecipeTable
-            recipes={filteredRecipes}
-            selectedRecipes={selectedRecipes}
-            onSelectAll={handleSelectAll}
-            onSelectRecipe={handleSelectRecipe}
-            onView={openSheet}
-            onEdit={openModal}
-            onDelete={openDeleteDialog}
-        />
-      )}
 
       {filteredRecipes.length === 0 && (
          <div className="text-center py-20">
