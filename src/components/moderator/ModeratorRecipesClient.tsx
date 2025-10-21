@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -156,7 +157,7 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
                 disabled={selectedRecipes.size === 0}
                 onClick={handleBulkDelete}
             >
-                <Trash2 className="mr-2 h-4 w-4" /> Bulk Delete ({selectedRecipes.size})
+                <Trash2 className="mr-2 h-4 w-4" /> Delete ({selectedRecipes.size})
             </Button>
         </div>
 
