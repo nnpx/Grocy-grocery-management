@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -42,6 +43,7 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isBulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
 
   const [activeRecipe, setActiveRecipe] = useState<ModeratorRecipe | null>(null);
   const [recipeToDelete, setRecipeToDelete] = useState<string | null>(null);
@@ -117,6 +119,7 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
     console.log(`Bulk deleted recipes:`, Array.from(selectedRecipes));
     toast({ title: "Bulk Delete Successful", description: `Removed ${selectedRecipes.size} recipes.`});
     setSelectedRecipes(new Set());
+    setBulkDeleteDialogOpen(false);
   };
 
   const handleSaveRecipe = (updatedRecipe: ModeratorRecipe) => {
@@ -155,7 +158,7 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
                 variant="destructive"
                 size="sm"
                 disabled={selectedRecipes.size === 0}
-                onClick={handleBulkDelete}
+                onClick={() => setBulkDeleteDialogOpen(true)}
             >
                 <Trash2 className="mr-2 h-4 w-4" /> Delete ({selectedRecipes.size})
             </Button>
@@ -224,6 +227,21 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={handleDeleteRecipe} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={isBulkDeleteDialogOpen} onOpenChange={setBulkDeleteDialogOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the {selectedRecipes.size} selected recipe(s).
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
