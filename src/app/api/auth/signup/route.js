@@ -1,4 +1,6 @@
 import { jsonOk, jsonError } from '@/lib/responses';
+import { getConnection } from '@/lib/db';
+import bcrypt from 'bcrypt';
 
 export async function POST(request) {
   try {
@@ -39,19 +41,43 @@ export async function POST(request) {
         return jsonError('Password contains invalid characters. Can optionally include !@#$%^&*', 422);
     }
 
+    // --- DB connect ---
+    const db = await getConnection();
 
-    // If all validations pass
-    console.log(`Placeholder signup for: ${email}`);
-    
-    // This is a placeholder response. In a real app, you would create the user in the database here.
-    return jsonOk({ 
-        message: "Signup placeholder OK (no DB yet)",
-        user: { username, email } 
-    });
+    // --- Uniqueness checks ---
+    // DB has UNIQUE(email); username is not unique in schema, but we check for nicer UX.
+    const [emailRows] = await db.query('SELECT user_id FROM users WHERE email = ?', [email]);
+    if (emailRows.length) return jsonError('Email is already registered.', 409);
+
+    const [userRows] = await db.query('SELECT user_id FROM users WHERE username = ?', [username]);
+    if (userRows.length) return jsonError('Username is already taken.', 409);
+
+    // --- Hash password & insert ---
+    const hash = await bcrypt.hash(password, 10); // cost factor 10 is fine to start
+    const [result] = await db.query(
+      'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
+      [username, email, hash]
+    );
+
+const user_id = result.insertId;
+
+    // (Optional) Auto-login here by issuing JWT and returning { token, user }.
+    // For now we just confirm creation:
+    return jsonOk(
+      {
+        message: 'User registered',
+        user: { user_id, username, email, role: 'User' }
+      },
+      { status: 201 }
+    );
 
   } catch (error) {
-    if (error instanceof SyntaxError) { // Catches JSON parsing errors
-        return jsonError('Invalid JSON in request body.', 400);
+    // Handle duplicate race condition just in case (DB-level)
+    if (error && error.code === 'ER_DUP_ENTRY') {
+      return jsonError('Email is already registered.', 409);
+    }
+    if (error instanceof SyntaxError) {
+      return jsonError('Invalid JSON in request body.', 400);
     }
     console.error('Signup API Error:', error);
     return jsonError('An unexpected error occurred.', 500);
