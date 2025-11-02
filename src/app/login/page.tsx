@@ -29,7 +29,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address').max(50),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(8, 'Password must be at least 8 characters').max(20),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -48,20 +48,51 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
+  const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
-    console.log('Login attempt:', data);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Mock success
-      toast({
-        title: 'Login Successful!',
-        description: 'Welcome back! Redirecting you to the dashboard.',
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
-      router.push('/dashboard');
-      setIsLoading(false);
-    }, 1500);
+
+      const result = await response.json();
+
+      if (response.ok && result.ok) {
+        toast({
+          title: 'Login Successful!',
+          description: 'Welcome back! Redirecting you to the dashboard.',
+        });
+        
+        // Store token in session storage (temporary solution)
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('AUTH_TOKEN', result.token);
+        }
+
+        // Redirect to dashboard after a short delay
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1000);
+
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: result.error || 'Invalid email or password.',
+        });
+      }
+    } catch (error) {
+       toast({
+          variant: 'destructive',
+          title: 'Network Error',
+          description: 'Could not connect to the server. Please try again.',
+        });
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   return (
