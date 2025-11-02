@@ -18,4 +18,6 @@ export interface Recipe {
   ingredients: string[];
   instructions?: string[]; // Optional for now
   isOwner?: boolean;
+  cookTime: number; // in minutes
+  createdAt: string; // ISO date string
 }

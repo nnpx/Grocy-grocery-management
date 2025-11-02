@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Globe, Clock, Dot, Pencil, Trash2 } from 'lucide-react';
+import { Globe, Clock, Dot, Pencil, Trash2, Soup } from 'lucide-react';
 import type { ModeratorRecipe } from '@/lib/moderator-types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ export function ModeratorRecipeCard({
   onSelectChange,
 }: ModeratorRecipeCardProps) {
   return (
-    <Card className="rounded-2xl overflow-hidden shadow-sm bg-card text-card-foreground border flex flex-col h-full group">
+    <Card className="rounded-2xl overflow-hidden shadow-sm bg-white text-card-foreground border flex flex-col h-full group">
       <CardHeader className="p-0 relative">
         <div className="absolute top-2 left-2 z-10">
           <Checkbox 
@@ -43,7 +43,7 @@ export function ModeratorRecipeCard({
             className="bg-background/80 border-background/90"
           />
         </div>
-        <div className="aspect-[4/3] bg-muted overflow-hidden cursor-pointer" onClick={onView}>
+        <div className="aspect-[16/9] h-48 bg-muted overflow-hidden cursor-pointer" onClick={onView}>
           <Image
             src={recipe.image_url}
             alt={recipe.name}
@@ -52,22 +52,33 @@ export function ModeratorRecipeCard({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
+         <Badge className="absolute top-3 left-10 bg-accent text-accent-foreground">
+            {recipe.category}
+          </Badge>
       </CardHeader>
-      <CardContent className="p-4 flex-grow">
-        <CardTitle className="font-semibold line-clamp-2 text-base mb-2 cursor-pointer" onClick={onView}>
+      <CardContent className="p-4 flex-grow space-y-3">
+        <CardTitle className="font-headline font-bold text-lg line-clamp-2 cursor-pointer" onClick={onView}>
           {recipe.name}
         </CardTitle>
-        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-2">
-            <Badge variant="secondary">{recipe.category}</Badge>
-            <Badge variant="secondary">{recipe.country}</Badge>
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {recipe.cook_time}m</span>
-            <span>{recipe.ingredients.length} ingredients</span>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+             <span className="flex items-center gap-1.5">
+                <Globe className="w-4 h-4" />
+                {recipe.country}
+            </span>
+             <span className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4" />
+                {recipe.cook_time} min
+            </span>
+             <span className="flex items-center gap-1.5">
+                <Soup className="w-4 h-4" />
+                {recipe.ingredients.length} ingredients
+            </span>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2">{recipe.description}</p>
+        <p className="text-sm text-gray-600 line-clamp-2">{recipe.description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between items-center">
         <div className="text-xs text-muted-foreground">
-          <p className="font-medium text-foreground">{recipe.author_name}</p>
+          <p>By {recipe.author_name}</p>
           <p>{formatDistanceToNow(new Date(recipe.created_at), { addSuffix: true })}</p>
         </div>
         <div className="flex items-center gap-1">

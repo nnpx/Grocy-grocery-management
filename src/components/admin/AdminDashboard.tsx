@@ -53,7 +53,7 @@ export function AdminDashboard({ users, recipes, categories, countries }: AdminD
   ].sort((a, b) => new Date(b.item.dateAdded).getTime() - new Date(a.item.dateAdded).getTime());
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <h1 className="text-3xl font-bold font-headline">Admin Dashboard</h1>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
