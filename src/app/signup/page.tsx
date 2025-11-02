@@ -22,7 +22,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { ChefHat, Eye, EyeOff } from 'lucide-react';
+import { ChefHat, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
@@ -30,7 +30,7 @@ const signupSchema = z.object({
   username: z
     .string()
     .min(3, 'Username must be at least 3 characters')
-    .max(20, 'Username must be at most 20 characters')
+    .max(50, 'Username must be at most 50 characters')
     .regex(/^[a-zA-Z][a-zA-Z0-9_]+$/, 'Must start with a letter and can only contain letters, numbers, or underscores'),
   email: z.string().email('Please enter a valid email address').max(50),
   password: z
@@ -47,6 +47,7 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -59,17 +60,43 @@ export default function SignupPage() {
     },
   });
 
-  const onSubmit = (data: SignupFormValues) => {
-    console.log('Signup successful:', data);
-    toast({
-      title: 'Account Created!',
-      description: 'Welcome to Grocy! Redirecting you to the dashboard.',
-    });
-    // In a real app, you'd handle API submission here.
-    // On success, redirect to the dashboard.
-    setTimeout(() => {
-      router.push('/dashboard');
-    }, 1500);
+  const onSubmit = async (data: SignupFormValues) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      const result = await response.json();
+
+      if (response.ok && result.ok) {
+        toast({
+          title: 'Account Created!',
+          description: 'Welcome to Grocy! Redirecting you to the dashboard.',
+        });
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1500);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: result.error || 'An unexpected error occurred.',
+        });
+      }
+    } catch (error) {
+       toast({
+          variant: 'destructive',
+          title: 'Network Error',
+          description: 'Could not connect to the server. Please try again.',
+        });
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   return (
@@ -95,7 +122,7 @@ export default function SignupPage() {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your username" {...field} />
+                      <Input placeholder="Enter your username" {...field} disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -108,7 +135,7 @@ export default function SignupPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="you@example.com" {...field} />
+                      <Input placeholder="you@example.com" {...field} disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -126,12 +153,14 @@ export default function SignupPage() {
                           type={showPassword ? 'text' : 'password'}
                           placeholder="Create a strong password"
                           {...field}
+                          disabled={isLoading}
                         />
                       </FormControl>
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                        disabled={isLoading}
                       >
                         {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         <span className="sr-only">Toggle password visibility</span>
@@ -141,7 +170,8 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" size="lg" className="w-full uppercase tracking-wide">
+              <Button type="submit" size="lg" className="w-full uppercase tracking-wide" disabled={isLoading}>
+                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign Up
               </Button>
             </form>
