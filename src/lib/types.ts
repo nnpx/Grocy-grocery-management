@@ -17,7 +17,7 @@ export interface Recipe {
   isFavorite: boolean;
   ingredients: string[];
   instructions?: string[]; // Optional for now
-  isOwner?: boolean;
+  owner: string;
   cookTime: number; // in minutes
   createdAt: string; // ISO date string
 }

@@ -1,31 +1,129 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { mockGroceryItems, mockRecipes } from '@/lib/mock-data';
 import { getExpiryStatus } from '@/lib/utils';
 import { StatCard } from '@/components/grocy/StatCard';
 import { ExpiringItems } from '@/components/grocy/ExpiringItems';
 import { RecipeSuggestions } from '@/components/grocy/RecipeSuggestions';
 import { Package, Clock3, Heart } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+// Define the expected structure of dashboard data
+interface DashboardData {
+  userName: string;
+  totalGroceries: number;
+  expiringItems: any[];
+  favoriteRecipes: any[];
+  suggestedRecipes: any[];
+}
 
 export default function DashboardPage() {
-  const userName = "Casey";
 
-  // Process data
-  const totalGroceries = mockGroceryItems.length;
-  const expiringSoonCount = mockGroceryItems.filter(item => {
-    const status = getExpiryStatus(item.expiryDate);
-    return status.days <= 7;
-  }).length;
-  const favoriteRecipesCount = mockRecipes.filter(recipe => recipe.isFavorite).length;
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter();
+  const { toast } = useToast();
 
-  const expiringItems = mockGroceryItems
-    .map(item => ({...item, status: getExpiryStatus(item.expiryDate)}))
+  // Fetch the dashboard data from the API
+  useEffect(() => {
+    const token = sessionStorage.getItem('AUTH_TOKEN');
+
+    console.log("seesionStorage token:\n", sessionStorage)
+
+    console.log("token")
+    console.log(token)
+
+    if (!token) {
+      toast({
+        variant: 'destructive',
+        title: 'Log in Required',
+        description: 'Please log in to access dashboard page.',
+      });
+
+      // If no token, redirect to login page
+      router.push('/login');
+      return;
+    }
+
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/dashboard', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        // If the response is OK, parse the JSON result
+        const result = await response.json();
+        console.log("Dashboard data:\n", result);
+
+
+        if (!response.ok) {
+          // Check for 401 status (Unauthorized)
+          if (response.status === 401) {
+            // The token is bad, clear it from session storage immediately
+            sessionStorage.removeItem('AUTH_TOKEN');
+
+            toast({
+              variant: 'destructive',
+              title: 'Session Expired',
+              description: 'Your session has expired. Please log in again.',
+            });
+          } else {
+            // Handle other server errors (403 Forbidden, 500 Internal, etc.)
+            toast({
+              variant: 'destructive',
+              title: 'Error Loading Dashboard',
+              description: result.error || 'Could not load data. Please try again later.',
+            });
+            setLoading(false);
+            return; // Stop execution if it's a non-auth error
+          }
+
+          setTimeout(() => {
+            router.push('/login');
+          }, 500);
+
+          setLoading(false); // Stop loading state while redirecting
+          return; // Stop execution
+        }
+
+        // Only runs if response.ok is true
+        setData(result);
+        setLoading(false);
+      } catch (error) {
+        // This catches network errors (e.g., server offline, CORS issues)
+        toast({
+          variant: 'destructive',
+          title: 'Network Error',
+          description: 'Could not connect to the server.',
+        });
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [router]);
+
+  if (loading) {
+    return <div className="text-center py-10">Loading Dashboard...</div>;
+  }
+
+  if (!data) {
+    return <div className="text-center py-10 text-gray-500">No dashboard data available.</div>;
+  }
+
+  const userName = data.userName;
+
+  const expiringItems = data.expiringItems
+    .map(item => ({ ...item, status: getExpiryStatus(item.expiryDate) }))
     .filter(item => item.status.days >= 0 && item.status.days <= 7)
     .sort((a, b) => a.status.days - b.status.days);
-
-  const inventory = new Set(mockGroceryItems.map(item => item.name));
-  const suggestedRecipes = mockRecipes.filter(recipe => 
-    recipe.ingredients.some(ingredient => inventory.has(ingredient))
-  );
 
   return (
     <div className="space-y-8">
@@ -36,30 +134,30 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Link href="/dashboard/groceries" className="h-full">
-            <StatCard 
-            title="Total Groceries" 
-            value={totalGroceries.toString()} 
-            icon={<Package className="h-6 w-6 text-primary" />} 
-            />
+          <StatCard
+            title="Total Groceries"
+            value={data.totalGroceries.toString()}
+            icon={<Package className="h-6 w-6 text-primary" />}
+          />
         </Link>
-        <StatCard 
-          title="Expiring Soon" 
-          value={expiringSoonCount.toString()} 
-          icon={<Clock3 className="h-6 w-6 text-accent" />} 
-          description="Within 1 week" 
+        <StatCard
+          title="Expiring Soon"
+          value={data.expiringItems.length.toString()}
+          icon={<Clock3 className="h-6 w-6 text-accent" />}
+          description="Within 1 week"
         />
         <Link href="/dashboard/favorites" className="h-full">
-            <StatCard 
-            title="Favorite Recipes" 
-            value={favoriteRecipesCount.toString()} 
-            icon={<Heart className="h-6 w-6 text-favorite" />} 
-            />
+          <StatCard
+            title="Favorite Recipes"
+            value={data.favoriteRecipes.toString()}
+            icon={<Heart className="h-6 w-6 text-favorite" />}
+          />
         </Link>
       </div>
 
       <ExpiringItems items={expiringItems} />
-      
-      <RecipeSuggestions recipes={suggestedRecipes} />
+
+      <RecipeSuggestions recipes={data.suggestedRecipes} />
     </div>
   );
 }

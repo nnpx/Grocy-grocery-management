@@ -18,9 +18,9 @@ const variantToBgColor = {
 };
 
 const variantToBorderColor = {
-    destructive: 'border-destructive/50',
-    accent: 'border-accent/50',
-    primary: 'border-primary/50',
+  destructive: 'border-destructive/50',
+  accent: 'border-accent/50',
+  primary: 'border-primary/50',
 }
 
 export function ExpiringItems({ items }: ExpiringItemsProps) {

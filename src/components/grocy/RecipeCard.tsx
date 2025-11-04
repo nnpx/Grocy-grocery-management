@@ -38,17 +38,17 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             {recipe.title}
           </h3>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-             <span className="flex items-center gap-1.5">
-                <Globe className="w-4 h-4" />
-                {recipe.country}
+            <span className="flex items-center gap-1.5">
+              <Globe className="w-4 h-4" />
+              {recipe.country}
             </span>
-             <span className="flex items-center gap-1.5">
-                <Clock className="w-4 h-4" />
-                {recipe.cookTime} min
+            <span className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4" />
+              {recipe.cookTime} min
             </span>
-             <span className="flex items-center gap-1.5">
-                <Soup className="w-4 h-4" />
-                {recipe.ingredients.length} ingredients
+            <span className="flex items-center gap-1.5">
+              <Soup className="w-4 h-4" />
+              {recipe.ingredients.length} ingredients
             </span>
           </div>
           <p className="text-sm text-gray-600 line-clamp-2">
@@ -57,8 +57,8 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           </p>
         </CardContent>
         <CardFooter className="p-4 pt-0 text-xs text-muted-foreground justify-between">
-            <span>By Community</span>
-            <span>{formatDistanceToNow(new Date(recipe.createdAt || new Date()), { addSuffix: true })}</span>
+          <span>{recipe.owner}</span>
+          <span>{formatDistanceToNow(new Date(recipe.createdAt || new Date()), { addSuffix: true })}</span>
         </CardFooter>
       </Card>
     </Link>
