@@ -7,7 +7,6 @@ export async function POST(request) {
     const { username, email, password } = await request.json();
 
     // --- Validation ---
-    
     // Username validation
     if (!username || username.length < 3 || username.length > 50) {
       return jsonError('Username must be between 3 and 50 characters.', 422);
@@ -38,7 +37,7 @@ export async function POST(request) {
       return jsonError('Password must include at least one number.', 422);
     }
     if (!/^[a-zA-Z0-9!@#$%^&*]*$/.test(password)) {
-        return jsonError('Password contains invalid characters. Can optionally include !@#$%^&*', 422);
+      return jsonError('Password contains invalid characters. Can optionally include !@#$%^&*', 422);
     }
 
     // --- DB connect ---
@@ -59,7 +58,7 @@ export async function POST(request) {
       [username, email, hash]
     );
 
-const user_id = result.insertId;
+    const user_id = result.insertId;
 
     // (Optional) Auto-login here by issuing JWT and returning { token, user }.
     // For now we just confirm creation:
