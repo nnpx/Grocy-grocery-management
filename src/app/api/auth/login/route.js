@@ -47,7 +47,7 @@ export async function POST(request) {
         role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '7d' }
     );
 
     // --- 4. Respond with token + user info ---
