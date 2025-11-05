@@ -55,40 +55,6 @@ export async function GET(request) {
       [user.user_id]
     );
 
-    // const [suggestedRecipes] = await db.query(
-    //   `
-    // SELECT DISTINCT
-    //     r.recipe_id as id,
-    //     r.title AS recipe_name,
-    //     r.description,
-    //     r.cook_time,
-    //     r.image_url,
-    //     r.created_at,
-    //     rc.name,
-    //     rco.name,
-    //     u.username
-    // FROM
-    //     user_items ui
-    // JOIN recipe_ingredients ri
-    //     ON ui.item_id = ri.item_id
-    // JOIN recipes r
-    //     ON ri.recipe_id = r.recipe_id
-    // JOIN items i
-    //     ON ri.item_id = i.item_id
-    // JOIN recipe_categories rc
-    // 	ON rc.recipe_category_id = r.recipe_category_id
-    // JOIN recipe_countries rco
-    // 	ON rco.recipe_country_id = r.recipe_country_id
-    // JOIN users u
-    // 	ON u.user_id = r.user_id
-    // WHERE
-    //     ui.user_id = ?
-    // ORDER BY
-    //     r.title;  -- Sort by recipe title
-    // `,
-    //   [user.user_id]
-    // )
-
     const suggestedRecipesSQL = `
       SELECT
           r.recipe_id AS id,
@@ -122,7 +88,6 @@ export async function GET(request) {
     // Pass user.user_id three times for the three placeholders: isOwner, isFavorite, ui_filter.user_id
     const [suggestedRecipes] = await db.query(suggestedRecipesSQL, [user.user_id, user.user_id, user.user_id]);
 
-    // 🛑 POST-PROCESSING STEP 🛑
     const processedSuggestedRecipes = suggestedRecipes.map(recipe => ({
       ...recipe,
       // Convert the concatenated string 'item1||item2' into a JavaScript array ['item1', 'item2']
@@ -143,7 +108,6 @@ export async function GET(request) {
     });
 
   } catch (error) {
-    // 🛑 THIS IS THE FIX 🛑
     console.error('Dashboard API Error:', error.message);
 
     // Check for specific security errors returned by requireRole
