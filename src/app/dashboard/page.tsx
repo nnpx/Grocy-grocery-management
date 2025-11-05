@@ -64,7 +64,6 @@ export default function DashboardPage() {
 
 
         if (!response.ok) {
-          // Check for 401 status (Unauthorized)
           if (response.status === 401) {
             // The token is bad, clear it from session storage immediately
             sessionStorage.removeItem('AUTH_TOKEN');
@@ -74,8 +73,15 @@ export default function DashboardPage() {
               title: 'Session Expired',
               description: 'Your session has expired. Please log in again.',
             });
+          } else if (response.status === 403) {
+            // 403 Forbidden - Role-based access denied
+            toast({
+              variant: 'destructive',
+              title: 'Access Denied',
+              description: 'You do not have permission to access this resource.',
+            });
           } else {
-            // Handle other server errors (403 Forbidden, 500 Internal, etc.)
+            // Handle other server errors (500 Internal, etc.)
             toast({
               variant: 'destructive',
               title: 'Error Loading Dashboard',
@@ -84,6 +90,7 @@ export default function DashboardPage() {
             setLoading(false);
             return; // Stop execution if it's a non-auth error
           }
+
 
           setTimeout(() => {
             router.push('/login');
