@@ -44,7 +44,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
-              {recipe.cookTime} min
+              {recipe.cookTime}
             </span>
             <span className="flex items-center gap-1.5">
               <Soup className="w-4 h-4" />
