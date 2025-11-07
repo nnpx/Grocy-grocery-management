@@ -43,26 +43,26 @@ export function MyRecipeCard({ recipe, onEdit, onDelete }: MyRecipeCardProps) {
           {recipe.title}
         </h3>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-             <span className="flex items-center gap-1.5">
-                <Globe className="w-4 h-4" />
-                {recipe.country}
-            </span>
-             <span className="flex items-center gap-1.5">
-                <Clock className="w-4 h-4" />
-                {recipe.cookTime} min
-            </span>
-             <span className="flex items-center gap-1.5">
-                <Soup className="w-4 h-4" />
-                {recipe.ingredients.length} ingredients
-            </span>
+          <span className="flex items-center gap-1.5">
+            <Globe className="w-4 h-4" />
+            {recipe.country}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Clock className="w-4 h-4" />
+            {recipe.cookTime}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Soup className="w-4 h-4" />
+            {recipe.ingredients.length} ingredients
+          </span>
         </div>
         <p className="text-sm text-gray-600 line-clamp-2">
           {recipe.description || 'A delicious recipe to try out with your fresh ingredients.'}
         </p>
       </CardContent>
       <CardFooter className="flex justify-between items-center p-4 pt-0">
-         <span className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(recipe.createdAt), { addSuffix: true })}
+        <span className="text-xs text-muted-foreground">
+          {formatDistanceToNow(new Date(recipe.createdAt), { addSuffix: true })}
         </span>
         <div className="flex justify-end gap-1">
           <TooltipProvider>

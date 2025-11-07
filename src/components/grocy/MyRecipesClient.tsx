@@ -42,7 +42,7 @@ export function MyRecipesClient({ recipes: initialRecipes }: MyRecipesClientProp
       id: newId,
       isFavorite: false,
       totalFavorites: 0,
-      isOwner: true,
+      // isOwner: true,
     };
     setRecipes([...recipes, recipeToAdd]);
   };
@@ -68,54 +68,54 @@ export function MyRecipesClient({ recipes: initialRecipes }: MyRecipesClientProp
     setRecipeToEdit(null);
     setModalOpen(true);
   };
-  
+
   const openDeleteConfirm = (recipe: Recipe) => {
     setRecipeToDelete(recipe);
     setDeleteConfirmOpen(true);
   };
-  
+
   return (
     <div className="space-y-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <h1 className="text-3xl font-bold font-headline">My Recipes</h1>
-            <Button onClick={openModalForAdd}>
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Recipe
-            </Button>
-        </div>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <h1 className="text-3xl font-bold font-headline">My Recipes</h1>
+        <Button onClick={openModalForAdd}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Add Recipe
+        </Button>
+      </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <StatCard
-                title="Total Recipes Created"
-                value={totalRecipes.toString()}
-                icon={<BookOpen className="h-6 w-6 text-primary" />}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <StatCard
+          title="Total Recipes Created"
+          value={totalRecipes.toString()}
+          icon={<BookOpen className="h-6 w-6 text-primary" />}
+        />
+        <StatCard
+          title="Total Favorites Received"
+          value={totalFavorites.toString()}
+          icon={<Star className="h-6 w-6 text-accent" />}
+        />
+      </div>
+
+      {recipes.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {recipes.map(recipe => (
+            <MyRecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              onEdit={() => openModalForEdit(recipe)}
+              onDelete={() => openDeleteConfirm(recipe)}
             />
-            <StatCard
-                title="Total Favorites Received"
-                value={totalFavorites.toString()}
-                icon={<Star className="h-6 w-6 text-accent" />}
-            />
+          ))}
         </div>
-        
-        {recipes.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {recipes.map(recipe => (
-                <MyRecipeCard 
-                    key={recipe.id} 
-                    recipe={recipe} 
-                    onEdit={() => openModalForEdit(recipe)}
-                    onDelete={() => openDeleteConfirm(recipe)}
-                />
-            ))}
-            </div>
-        ) : (
-             <div className="flex flex-col items-center justify-center text-center py-20 rounded-2xl bg-muted/50">
-                <p className="text-lg font-medium text-foreground">You haven't created any recipes yet.</p>
-                <p className="text-sm text-muted-foreground mb-4">Click "Add Recipe" to get started!</p>
-                <Button onClick={openModalForAdd}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Recipe
-                </Button>
-            </div>
-        )}
+      ) : (
+        <div className="flex flex-col items-center justify-center text-center py-20 rounded-2xl bg-muted/50">
+          <p className="text-lg font-medium text-foreground">You haven't created any recipes yet.</p>
+          <p className="text-sm text-muted-foreground mb-4">Click "Add Recipe" to get started!</p>
+          <Button onClick={openModalForAdd}>
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Recipe
+          </Button>
+        </div>
+      )}
 
       <AddEditRecipeDialog
         isOpen={isModalOpen}
@@ -126,21 +126,21 @@ export function MyRecipesClient({ recipes: initialRecipes }: MyRecipesClientProp
         countries={recipeCountries}
       />
 
-       <AlertDialog open={isDeleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+      <AlertDialog open={isDeleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogContent>
-            <AlertDialogHeader>
+          <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your recipe
-                "{recipeToDelete?.title}".
+              This action cannot be undone. This will permanently delete your recipe
+              "{recipeToDelete?.title}".
             </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteRecipe} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
-            </AlertDialogFooter>
+          </AlertDialogFooter>
         </AlertDialogContent>
-    </AlertDialog>
+      </AlertDialog>
     </div>
   );
 }
