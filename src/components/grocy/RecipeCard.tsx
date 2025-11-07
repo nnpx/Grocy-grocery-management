@@ -1,43 +1,56 @@
-'use client';
+"use client";
 
-import type { Recipe } from '@/lib/types';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { FavoriteButton } from './FavoriteButton';
-import { Clock, Globe, Soup } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import type { Recipe } from "@/lib/types";
+import Image from "next/image";
+import Link from "next/link";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { FavoriteButton } from "./FavoriteButton";
+import { Clock, Globe, Soup } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 interface RecipeCardProps {
   recipe: Recipe;
+  onToggleFavorite?: () => void; // ✅ add this optional prop
 }
 
-export function RecipeCard({ recipe }: RecipeCardProps) {
+export function RecipeCard({ recipe, onToggleFavorite }: RecipeCardProps) {
+  // ✅ include in destructure
   return (
     <Link href={`/dashboard/recipes/${recipe.id}`} className="block h-full">
-      <Card className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 group flex flex-col h-full bg-white">
+      <Card className="group flex flex-col bg-white shadow-sm hover:shadow-lg rounded-2xl h-full overflow-hidden transition-shadow duration-300">
         <div className="relative">
           <Image
             src={recipe.imageUrl}
             alt={recipe.title}
             width={600}
             height={400}
-            className="aspect-[16/9] h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-48 object-cover aspect-[16/9] group-hover:scale-105 transition-transform duration-300"
             data-ai-hint="food recipe"
           />
-          <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground">
+          <Badge className="top-3 left-3 absolute bg-accent text-accent-foreground">
             {recipe.category}
           </Badge>
-          <div className="absolute top-3 right-3">
+
+          {/* ✅ make heart button clickable if onToggleFavorite is passed */}
+          <div
+            className="top-3 right-3 absolute"
+            onClick={(e) => {
+              if (!onToggleFavorite) return;
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleFavorite();
+            }}
+          >
             <FavoriteButton recipe={recipe} />
           </div>
         </div>
-        <CardContent className="p-4 space-y-3 flex-grow flex flex-col">
-          <h3 className="text-lg font-headline font-bold text-foreground flex-grow">
+
+        <CardContent className="flex flex-col flex-grow space-y-3 p-4">
+          <h3 className="flex-grow font-headline font-bold text-foreground text-lg">
             {recipe.title}
           </h3>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground text-sm">
             <span className="flex items-center gap-1.5">
               <Globe className="w-4 h-4" />
               {recipe.country}
@@ -51,14 +64,19 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
               {recipe.ingredients.length} ingredients
             </span>
           </div>
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p className="text-gray-600 text-sm line-clamp-2">
             {recipe.description ||
-              'A delicious recipe to try out with your fresh ingredients.'}
+              "A delicious recipe to try out with your fresh ingredients."}
           </p>
         </CardContent>
-        <CardFooter className="p-4 pt-0 text-xs text-muted-foreground justify-between">
+
+        <CardFooter className="justify-between p-4 pt-0 text-muted-foreground text-xs">
           <span>{recipe.owner}</span>
-          <span>{formatDistanceToNow(new Date(recipe.createdAt || new Date()), { addSuffix: true })}</span>
+          <span>
+            {formatDistanceToNow(new Date(recipe.createdAt || new Date()), {
+              addSuffix: true,
+            })}
+          </span>
         </CardFooter>
       </Card>
     </Link>
