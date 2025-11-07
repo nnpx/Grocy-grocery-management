@@ -8,7 +8,7 @@ const generateItems = <T>(count: number, factory: (index: number) => T): T[] => 
 };
 
 // Mock Users
-const roles: User['role'][] = ['Admin', 'Developer', 'User'];
+const roles: User['role'][] = ['Admin', 'Moderator', 'User'];
 export const mockAdminUsers: User[] = generateItems(25, i => ({
   id: i + 1,
   name: `User ${i + 1}`,
@@ -30,7 +30,7 @@ export const mockAdminRecipes: Recipe[] = generateItems(50, i => ({
   country: countries[i % countries.length],
   dateAdded: format(subDays(today, Math.floor(Math.random() * 40)), 'yyyy-MM-dd HH:mm:ss'),
   favorites: Math.floor(Math.random() * 500),
-  imageUrl: `https://picsum.photos/seed/${i+100}/600/400`,
+  imageUrl: `https://picsum.photos/seed/${i + 100}/600/400`,
   description: 'A delicious recipe for your enjoyment.',
   ingredients: ['Ingredient A', 'Ingredient B', 'Ingredient C'],
 }));

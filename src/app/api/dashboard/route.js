@@ -1,6 +1,6 @@
 import { jsonOk, jsonError } from '@/lib/responses';
 import { getConnection } from '@/lib/db';
-import { verifyToken, requireRole } from '@/lib/auth';
+import { requireRole } from '@/lib/auth';
 
 export async function GET(request) {
   try {
@@ -110,7 +110,6 @@ export async function GET(request) {
   } catch (error) {
     console.error('Dashboard API Error:', error.message);
 
-    // Check for specific security errors returned by requireRole
     if (error.message.includes('Unauthorized')) {
       return jsonError(error.message, 401); // 401 Unauthorized (Token problem)
     }
@@ -118,7 +117,6 @@ export async function GET(request) {
       return jsonError(error.message, 403); // 403 Forbidden (Role problem)
     }
 
-    // Fallback for unexpected database or internal errors
     return jsonError('Internal Server Error: ' + error.message, 500);
   }
 }

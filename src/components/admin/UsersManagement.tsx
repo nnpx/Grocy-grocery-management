@@ -45,14 +45,46 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
   const { toast } = useToast();
 
-  const handleSave = () => {
-    if (selectedUser && editedUser) {
-      setUsers(prev => prev.map(u => u.id === selectedUser.id ? { ...u, ...editedUser } : u));
-      toast({ title: 'Success', description: 'User updated successfully.' });
+  const handleSave = async () => {
+    if (!editedUser.name || !editedUser.role || !editedUser.status) {
+      toast({ title: 'Error', description: 'All fields in the user edit form are required.', variant: 'destructive' });
+      return;
     }
-    setModalOpen(false);
-    setSelectedUser(null);
-    setEditedUser({});
+
+    try {
+      const token = sessionStorage.getItem('AUTH_TOKEN');
+
+      const response = await fetch('/api/admin/users', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: selectedUser?.id,
+          name: editedUser.name,
+          role: editedUser.role,
+          status: editedUser.status,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        toast({ title: 'Error', description: result.error, variant: 'destructive' });
+        return;
+      }
+
+      // Update the user in the state
+      setUsers(prev => prev.map(u => u.id === selectedUser?.id ? { ...u, ...editedUser } : u));
+
+      toast({ title: 'Success', description: 'User updated successfully.' });
+      setModalOpen(false);
+      setSelectedUser(null);
+      setEditedUser({});
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to update user.', variant: 'destructive' });
+    }
   };
 
   const handleDelete = () => {
@@ -63,7 +95,7 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
     setDeleteDialogOpen(false);
     setSelectedUser(null);
   };
-  
+
   const openModal = (user: User) => {
     setSelectedUser(user);
     setEditedUser({ name: user.name, role: user.role, status: user.status });
@@ -81,14 +113,14 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
   }
 
   const columns: ColumnDef<User>[] = useMemo(() => [
-    { 
-      accessorKey: 'name', 
+    {
+      accessorKey: 'name',
       header: 'Name',
       enableColumnFilter: true,
       filterFn: 'includesString',
     },
-    { 
-      accessorKey: 'email', 
+    {
+      accessorKey: 'email',
       header: 'Email',
       enableColumnFilter: true,
       filterFn: 'includesString',
@@ -99,9 +131,9 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
       cell: ({ row }) => {
         const role = row.getValue('role') as User['role'];
         const roleColors: Record<User['role'], string> = {
-            Admin: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-            Developer: 'bg-blue-100 text-blue-800 border-blue-200',
-            User: 'bg-gray-100 text-gray-800 border-gray-200',
+          Admin: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+          Moderator: 'bg-blue-100 text-blue-800 border-blue-200',
+          User: 'bg-gray-100 text-gray-800 border-gray-200',
         };
         return <Badge variant="outline" className={cn("font-semibold", roleColors[role])}>{role}</Badge>
       },
@@ -139,7 +171,7 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold font-headline">Users Management</h1>
-      
+
       <DataTable columns={columns} data={users} />
 
       <Dialog open={isModalOpen} onOpenChange={setModalOpen}>
@@ -152,20 +184,20 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
               <Label htmlFor="name">Name</Label>
               <Input id="name" value={editedUser.name || ''} onChange={e => setEditedUser(u => ({ ...u, name: e.target.value }))} />
             </div>
-             <div className="grid gap-2">
+            <div className="grid gap-2">
               <Label htmlFor="role">Role</Label>
               <Select value={editedUser.role || ''} onValueChange={value => setEditedUser(u => ({ ...u, role: value as User['role'] }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="User">User</SelectItem>
                   <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="Developer">Developer</SelectItem>
+                  <SelectItem value="Moderator">Moderator</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-             <div className="grid gap-2">
+            <div className="grid gap-2">
               <Label htmlFor="status">Status</Label>
-               <Select value={editedUser.status || ''} onValueChange={value => setEditedUser(u => ({ ...u, status: value as User['status'] }))}>
+              <Select value={editedUser.status || ''} onValueChange={value => setEditedUser(u => ({ ...u, status: value as User['status'] }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Active">Active</SelectItem>
@@ -180,13 +212,13 @@ export function UsersManagement({ initialUsers }: UsersManagementProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent>
           <SheetHeader>
             <SheetTitle>{selectedUser?.name}</SheetTitle>
             <SheetDescription>
-                {selectedUser?.email}
+              {selectedUser?.email}
             </SheetDescription>
           </SheetHeader>
           <div className="py-4 space-y-2">

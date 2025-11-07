@@ -59,50 +59,137 @@ export function CategoriesCountriesManagement({ initialCategories, initialCountr
     setDialogOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!itemName.trim()) {
       toast({ title: 'Error', description: 'Name cannot be empty.', variant: 'destructive' });
       return;
     }
     const type = currentItem?.type;
-    
+
     if (currentItem) { // Editing
-      if (type === 'category') {
-        setCategories(cats => cats.map(c => c.id === currentItem.id ? { ...c, name: itemName } : c));
-      } else {
-        setCountries(cts => cts.map(c => c.id === currentItem.id ? { ...c, name: itemName } : c));
+      try {
+        const token = sessionStorage.getItem('AUTH_TOKEN');
+
+        const response = await fetch('/api/admin/categories-countries', {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: currentItem.type, // 'category' or 'country'
+            id: currentItem.id,
+            name: itemName,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          toast({ title: 'Error', description: result.error, variant: 'destructive' });
+          return;
+        }
+
+        // Update the category or country in the state
+        if (type === 'category') {
+          setCategories(cats => cats.map(c => c.id === currentItem.id ? { ...c, name: itemName } : c));
+        } else {
+          setCountries(cts => cts.map(c => c.id === currentItem.id ? { ...c, name: itemName } : c));
+        }
+
+        toast({ title: 'Success', description: `${type} updated successfully.` });
+      } catch (error) {
+        toast({ title: 'Error', description: 'Failed to update item.', variant: 'destructive' });
       }
-      toast({ title: 'Success', description: `${type} updated successfully.` });
+
     } else { // Adding
       const activeTab = document.querySelector('[data-state="active"]')?.getAttribute('data-tab') || 'categories';
-      if (activeTab === 'categories') {
-        const newCategory: Category = { id: Date.now(), name: itemName, recipeCount: 0, dateAdded: new Date().toISOString() };
-        setCategories(cats => [...cats, newCategory]);
-      } else {
-        const newCountry: Country = { id: Date.now(), name: itemName, recipeCount: 0, dateAdded: new Date().toISOString() };
-        setCountries(cts => [...cts, newCountry]);
+      const apiType = activeTab === 'categories' ? 'category' : 'country';
+
+      const response = await fetch('/api/admin/categories-countries', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type: apiType, name: itemName }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        toast({ title: 'Error', description: result.error, variant: 'destructive' });
+        return;
       }
-      toast({ title: 'Success', description: `New item added successfully.` });
+
+      // Add new category or country to the state
+      if (activeTab === 'categories') {
+        setCategories(cats => [...cats, { id: result.id, name: itemName, recipeCount: 0 }]);
+      } else {
+        setCountries(cts => [...cts, { id: result.id, name: itemName, recipeCount: 0 }]);
+      }
+
+      toast({ title: 'Success', description: `New ${activeTab.slice(0, -1)} added successfully.` });
     }
+
     setDialogOpen(false);
   };
-  
+
   const handleOpenDeleteDialog = (item: EditableItem) => {
     setCurrentItem(item);
     setDeleteDialogOpen(true);
   }
 
-  const handleDelete = () => {
-    if (currentItem) {
+  const handleDelete = async () => {
+    if (!currentItem) return;
+
+    try {
+      const token = sessionStorage.getItem('AUTH_TOKEN');
+
+      const response = await fetch('/api/admin/categories-countries', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: currentItem.type, // 'category' or 'country'
+          id: currentItem.id,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        toast({ title: 'Error', description: result.error, variant: 'destructive' });
+        return;
+      }
+
+      // Remove the deleted item from the state
       if (currentItem.type === 'category') {
         setCategories(cats => cats.filter(c => c.id !== currentItem.id));
       } else {
         setCountries(cts => cts.filter(c => c.id !== currentItem.id));
       }
-      toast({ title: 'Success', description: `${currentItem.type} deleted.` });
+
+      toast({ title: 'Success', description: `${currentItem.type} deleted successfully.` });
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to delete item.', variant: 'destructive' });
     }
+
     setDeleteDialogOpen(false);
     setCurrentItem(null);
+
+    // if (currentItem) {
+    //   if (currentItem.type === 'category') {
+    //     setCategories(cats => cats.filter(c => c.id !== currentItem.id));
+    //   } else {
+    //     setCountries(cts => cts.filter(c => c.id !== currentItem.id));
+    //   }
+    //   toast({ title: 'Success', description: `${currentItem.type} deleted.` });
+    // }
+    // setDeleteDialogOpen(false);
+    // setCurrentItem(null);
   };
 
   const categoryUsage = useMemo(() => {
@@ -112,7 +199,7 @@ export function CategoriesCountriesManagement({ initialCategories, initialCountr
     });
     return counts;
   }, [recipes]);
-  
+
   const countryUsage = useMemo(() => {
     const counts: { [key: string]: number } = {};
     recipes.forEach(r => {
@@ -121,17 +208,12 @@ export function CategoriesCountriesManagement({ initialCategories, initialCountr
     return counts;
   }, [recipes]);
 
-  const categoryData = categories.map(c => ({...c, recipeCount: categoryUsage[c.name] || 0}));
-  const countryData = countries.map(c => ({...c, recipeCount: countryUsage[c.name] || 0}));
+  const categoryData = categories;
+  const countryData = countries;
 
   const columns: ColumnDef<Category | Country>[] = [
     { accessorKey: 'name', header: 'Name' },
     { accessorKey: 'recipeCount', header: 'Used By' },
-    {
-      accessorKey: 'dateAdded',
-      header: 'Date Added',
-      cell: ({ row }) => format(new Date(row.getValue('dateAdded')), 'PPP'),
-    },
     {
       id: 'actions',
       cell: ({ row }) => {
@@ -152,7 +234,7 @@ export function CategoriesCountriesManagement({ initialCategories, initialCountr
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold font-headline">Categories & Countries</h1>
+      <h1 className="text-3xl font-bold font-headline">Categories & Countries of Recipes</h1>
       <Tabs defaultValue="categories">
         <div className="flex justify-between items-end">
           <TabsList>
@@ -164,42 +246,46 @@ export function CategoriesCountriesManagement({ initialCategories, initialCountr
           </Button>
         </div>
         <TabsContent value="categories">
-          <DataTable columns={columns.map(c => c.id === 'actions' ? {...c, cell: ({ row }) => {
-                const item: EditableItem = { ...row.original as Category, type: 'category' };
-                return (
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(item)}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleOpenDeleteDialog(item)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                );
-              }} : c)} data={categoryData} />
+          <DataTable columns={columns.map(c => c.id === 'actions' ? {
+            ...c, cell: ({ row }) => {
+              const item: EditableItem = { ...row.original as Category, type: 'category' };
+              return (
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(item)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleOpenDeleteDialog(item)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              );
+            }
+          } : c)} data={categoryData} />
         </TabsContent>
         <TabsContent value="countries">
-          <DataTable columns={columns.map(c => c.id === 'actions' ? {...c, cell: ({ row }) => {
-                const item: EditableItem = { ...row.original as Country, type: 'country' };
-                return (
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(item)}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleOpenDeleteDialog(item)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                );
-              }} : c)} data={countryData} />
+          <DataTable columns={columns.map(c => c.id === 'actions' ? {
+            ...c, cell: ({ row }) => {
+              const item: EditableItem = { ...row.original as Country, type: 'country' };
+              return (
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(item)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleOpenDeleteDialog(item)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              );
+            }
+          } : c)} data={countryData} />
         </TabsContent>
       </Tabs>
-      
-       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{currentItem ? `Edit ${currentItem.type}` : 'Add New Item'}</DialogTitle>
-             <DialogDescription>
+            <DialogDescription>
               {currentItem ? `Rename "${currentItem.name}"` : 'Create a new category or country.'}
             </DialogDescription>
           </DialogHeader>
@@ -213,8 +299,8 @@ export function CategoriesCountriesManagement({ initialCategories, initialCountr
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
-       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>

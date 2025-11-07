@@ -60,7 +60,7 @@ export function AdminDashboard({ users, recipes, categories, countries }: AdminD
         <StatCard title="Total Users" value={totalUsers.toString()} icon={<Users className="h-6 w-6 text-primary" />} />
         <StatCard title="Total Recipes" value={totalRecipes.toString()} icon={<ChefHat className="h-6 w-6 text-primary" />} />
         <StatCard title="Total Favorites" value={totalFavorites.toString()} icon={<Heart className="h-6 w-6 text-favorite" />} />
-        <StatCard title="Categories & Countries" value={`${categories.length} / ${countries.length}`} icon={<Globe className="h-6 w-6 text-accent" />} />
+        <StatCard title="Categories & Countries" value={`${categories.length} & ${countries.length}`} icon={<Globe className="h-6 w-10 text-accent" />} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -86,7 +86,7 @@ export function AdminDashboard({ users, recipes, categories, countries }: AdminD
             <CardTitle>New Recipes (Last 14 Days)</CardTitle>
           </CardHeader>
           <CardContent>
-             <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart data={recipesChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
@@ -100,7 +100,7 @@ export function AdminDashboard({ users, recipes, categories, countries }: AdminD
         </Card>
       </div>
 
-       <Card className="rounded-2xl">
+      <Card className="rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5" />
@@ -118,7 +118,7 @@ export function AdminDashboard({ users, recipes, categories, countries }: AdminD
                     </>
                   ) : (
                     <>
-                       <span className="font-semibold">New recipe created:</span> {(activity.item as Recipe).name} by {(activity.item as Recipe).author}
+                      <span className="font-semibold">New recipe created:</span> {(activity.item as Recipe).name} by {(activity.item as Recipe).author}
                     </>
                   )}
                 </div>
