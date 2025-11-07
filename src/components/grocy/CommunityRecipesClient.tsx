@@ -10,17 +10,23 @@ import { Label } from '../ui/label';
 
 interface CommunityRecipesClientProps {
   recipes: Recipe[];
+  categories: string[];
+  countries: string[];
 }
 
-const recipeCategories = ['All', 'Vegan', 'Halal', 'Dessert', 'Quick & Easy'];
-const recipeCountries = ['All', 'American', 'Italian', 'International', 'French'];
-
-export function CommunityRecipesClient({ recipes: initialRecipes }: CommunityRecipesClientProps) {
-  const [recipes, setRecipes] = useState<Recipe[]>(initialRecipes);
+export function CommunityRecipesClient({
+  recipes: initialRecipes,
+  categories,
+  countries,
+}: CommunityRecipesClientProps) {
+  const [recipes] = useState<Recipe[]>(initialRecipes);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [country, setCountry] = useState('All');
   const [sort, setSort] = useState('newest');
+
+  const recipeCategories = ['All', ...categories];
+  const recipeCountries = ['All', ...countries];
 
   const filteredRecipes = recipes
     .filter(recipe => {
@@ -49,14 +55,14 @@ export function CommunityRecipesClient({ recipes: initialRecipes }: CommunityRec
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h1 className="text-3xl font-bold font-headline">Community Recipes</h1>
         <div className="relative flex-1 md:max-w-xs">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-                type="search"
-                placeholder="Search recipes..."
-                className="pl-8 w-full"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-            />
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search recipes..."
+            className="pl-8 w-full"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
       </div>
 
@@ -102,18 +108,18 @@ export function CommunityRecipesClient({ recipes: initialRecipes }: CommunityRec
         </div>
       </div>
 
-        {sortedRecipes.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {sortedRecipes.map(recipe => (
-                    <RecipeCard key={recipe.id} recipe={recipe} />
-                ))}
-            </div>
-        ) : (
-            <div className="flex flex-col items-center justify-center text-center py-20">
-                <p className="text-lg font-medium text-muted-foreground">No recipes found.</p>
-                <p className="text-sm text-muted-foreground">Try adjusting your search or filters.</p>
-            </div>
-        )}
+      {sortedRecipes.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {sortedRecipes.map(recipe => (
+            <RecipeCard key={recipe.id} recipe={recipe} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-center py-20">
+          <p className="text-lg font-medium text-muted-foreground">No recipes found.</p>
+          <p className="text-sm text-muted-foreground">Try adjusting your search or filters.</p>
+        </div>
+      )}
     </div>
   );
 }
