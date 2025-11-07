@@ -26,13 +26,13 @@ export const mockModeratorRecipes: ModeratorRecipe[] = Array.from({ length: 32 }
     category: getRandomItem(categories),
     country: getRandomItem(countries),
     cook_time: Math.floor(Math.random() * 90) + 15,
-    description: `A delicious and easy-to-make dish that's perfect for a quick weeknight dinner. Flavorful, satisfying, and ready in under ${cookTime + 5} minutes.`,
+    description: `A delicious and easy-to-make dish that's perfect for a quick weeknight dinner. Flavorful, satisfying, and ready in under ${cookTime + 5}`,
     ingredients: Array.from({ length: Math.floor(Math.random() * 5) + 4 }, (_, j) => `Ingredient ${j + 1}`),
     instructions: [
-        'Do something.',
-        'Do something else.',
-        `Combine everything and cook for ${cookTime} minutes.`,
-        'Serve and enjoy.'
+      'Do something.',
+      'Do something else.',
+      `Combine everything and cook for ${cookTime} `,
+      'Serve and enjoy.'
     ],
     image_url: `https://picsum.photos/seed/${i + 200}/800/600`,
     created_at: i < 5 ? subHours(now, i * 3).toISOString() : subDays(now, i).toISOString(),
