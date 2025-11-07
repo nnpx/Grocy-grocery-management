@@ -46,16 +46,16 @@ function DataTableColumnHeader<TData, TValue>({
 
   const sortedUniqueValues = useMemo(
     () => {
-        if (column.id === 'role' || column.id === 'status') {
-            const uniqueValues = column.getFacetedUniqueValues();
-            if (!uniqueValues) return [];
-            return Array.from(uniqueValues.keys()).sort();
-        }
-        return [];
+      if (column.id === 'role' || column.id === 'status') {
+        const uniqueValues = column.getFacetedUniqueValues();
+        if (!uniqueValues) return [];
+        return Array.from(uniqueValues.keys()).sort();
+      }
+      return [];
     },
     [column.getFacetedUniqueValues, column.id]
   );
-  
+
   const renderFilter = () => {
     switch (column.id) {
       case 'role':
@@ -65,7 +65,7 @@ function DataTableColumnHeader<TData, TValue>({
             <h4 className="font-medium text-sm">Filter by {title}</h4>
             {sortedUniqueValues.map((value: any) => (
               <div key={value} className="flex items-center gap-2">
-                 <Checkbox
+                <Checkbox
                   id={`${column.id}-${value}`}
                   checked={(column.getFilterValue() as any[])?.includes(value)}
                   onCheckedChange={(checked) => {
@@ -84,35 +84,35 @@ function DataTableColumnHeader<TData, TValue>({
         );
       case 'name':
       case 'email':
-         return (
-             <div className="p-2">
-                <Input
-                    placeholder={`Filter ${title}...`}
-                    value={(column.getFilterValue() as string) ?? ''}
-                    onChange={(e) => column.setFilterValue(e.target.value)}
-                    className="w-full"
-                />
-            </div>
-         )
+        return (
+          <div className="p-2">
+            <Input
+              placeholder={`Filter ${title}...`}
+              value={(column.getFilterValue() as string) ?? ''}
+              onChange={(e) => column.setFilterValue(e.target.value)}
+              className="w-full"
+            />
+          </div>
+        )
       default:
         return null;
     }
   };
 
   if (column.id === 'dateAdded') {
-      return (
-        <div className="flex items-center gap-2">
-          <span>{title}</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            <ArrowUpDown className="h-4 w-4" />
-          </Button>
-        </div>
-      );
+    return (
+      <div className="flex items-center gap-2">
+        <span>{title}</span>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
+      </div>
+    );
   }
 
   return (
@@ -133,7 +133,7 @@ function DataTableColumnHeader<TData, TValue>({
           <PopoverContent className="w-56 p-0" align="start">
             {renderFilter()}
             {(column.getFilterValue() as any[])?.length > 0 && (
-                <Button variant="ghost" onClick={() => column.setFilterValue(undefined)} className="w-full border-t rounded-t-none">Clear</Button>
+              <Button variant="ghost" onClick={() => column.setFilterValue(undefined)} className="w-full border-t rounded-t-none">Clear</Button>
             )}
           </PopoverContent>
         </Popover>
@@ -174,11 +174,23 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
+                  const columnDef = header.column.columnDef;
+                  let isUsedByColumn = false;
+
+                  if ('accessorKey' in columnDef) {
+                    const accessorKey = (columnDef as any).accessorKey;
+                    isUsedByColumn = accessorKey === 'recipeCount';
+                  }
+
                   return (
                     <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
-                        : (
+                        : isUsedByColumn ? (
+                          <div className="flex items-center">
+                            {header.column.columnDef.header as string}
+                          </div>
+                        ) : (
                           <DataTableColumnHeader
                             column={header.column}
                             title={header.column.columnDef.header as string}
@@ -215,7 +227,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </Card>
       <div className="flex items-center justify-end space-x-2 py-4">
-         <Button
+        <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}

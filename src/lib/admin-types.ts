@@ -2,7 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: 'Admin' | 'User' | 'Developer';
+  role: 'Admin' | 'User' | 'Moderator';
   status: 'Active' | 'Deactivated';
   dateAdded: string; // ISO string
 }
@@ -24,12 +24,10 @@ export interface Category {
   id: number;
   name: string;
   recipeCount: number;
-  dateAdded: string; // ISO string
 }
 
 export interface Country {
   id: number;
   name: string;
   recipeCount: number;
-  dateAdded: string; // ISO string
 }
