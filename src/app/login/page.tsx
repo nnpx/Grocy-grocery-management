@@ -66,16 +66,25 @@ export default function LoginPage() {
           title: 'Login Successful!',
           description: 'Welcome back! Redirecting you to the dashboard.',
         });
-        
+
         // Store token in session storage (temporary solution)
         if (typeof window !== 'undefined') {
           sessionStorage.setItem('AUTH_TOKEN', result.token);
         }
 
-        // Redirect to dashboard after a short delay
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 1000);
+        if (result.user.role === 'Moderator') {
+          setTimeout(() => {
+            router.push('/moderator');
+          }, 1000);
+        } else if (result.user.role === 'Admin') {
+          setTimeout(() => {
+            router.push('/admin');
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            router.push('/dashboard');
+          }, 1000);
+        }
 
       } else {
         toast({
@@ -85,13 +94,13 @@ export default function LoginPage() {
         });
       }
     } catch (error) {
-       toast({
-          variant: 'destructive',
-          title: 'Network Error',
-          description: 'Could not connect to the server. Please try again.',
-        });
+      toast({
+        variant: 'destructive',
+        title: 'Network Error',
+        description: 'Could not connect to the server. Please try again.',
+      });
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -99,8 +108,8 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       <div className="absolute top-8 left-8">
         <Link href="/" className="flex items-center gap-2 text-primary">
-            <ChefHat className="h-8 w-8" />
-            <span className="text-2xl font-bold font-headline">Grocy</span>
+          <ChefHat className="h-8 w-8" />
+          <span className="text-2xl font-bold font-headline">Grocy</span>
         </Link>
       </div>
       <Card className="w-full max-w-md rounded-2xl shadow-lg">
@@ -154,7 +163,7 @@ export default function LoginPage() {
                 )}
               />
               <Button type="submit" size="lg" className="w-full uppercase tracking-wide" disabled={isLoading}>
-                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Log In
               </Button>
             </form>
