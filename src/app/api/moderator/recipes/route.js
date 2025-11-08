@@ -140,10 +140,11 @@ export async function PUT(request) {
 
         // Update the ingredients
         if (ingredients && ingredients.length > 0) {
-            // Get the item IDs for all provided ingredient names
+            const lowerCaseIngredients = ingredients.map(name => name.trim().toLowerCase());
+
             const [validItems] = await db.query(
                 'SELECT item_id, name FROM items WHERE name IN (?)',
-                [ingredients]
+                [lowerCaseIngredients]
             );
 
             const validItemIdsMap = new Map();
