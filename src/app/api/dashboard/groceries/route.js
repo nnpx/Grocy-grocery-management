@@ -43,7 +43,7 @@ export async function GET(request) {
     const [items] = await db.query(query, values);
     console.log("Fetched items:", items);
 
-    // ✅ fetch categories from DB
+    // fetch categories from DB
     const [categoryRows] = await db.query(
       "SELECT name FROM item_categories ORDER BY name ASC",
     );

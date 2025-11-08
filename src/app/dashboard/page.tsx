@@ -31,11 +31,6 @@ export default function DashboardPage() {
   useEffect(() => {
     const token = sessionStorage.getItem('AUTH_TOKEN');
 
-    console.log("seesionStorage token:\n", sessionStorage)
-
-    console.log("token")
-    console.log(token)
-
     if (!token) {
       toast({
         variant: 'destructive',
@@ -43,7 +38,6 @@ export default function DashboardPage() {
         description: 'Please log in to access dashboard page.',
       });
 
-      // If no token, redirect to login page
       router.push('/login');
       return;
     }
