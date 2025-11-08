@@ -46,6 +46,12 @@ export function AdminPageClient({ users, recipes, categories, countries }: Admin
     router.push(`${pathname}?tab=${tab}`);
   };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('AUTH_TOKEN');
+
+    router.push('/login');
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -70,31 +76,31 @@ export function AdminPageClient({ users, recipes, categories, countries }: Admin
           <SidebarHeader>
             <div className="flex items-center gap-3">
               <Link href="/admin" className="flex items-center gap-2">
-                 <ChefHat className="w-8 h-8 text-primary" />
-                 <h1 className="text-2xl font-headline font-bold text-primary">Grocy Admin</h1>
+                <ChefHat className="w-8 h-8 text-primary" />
+                <h1 className="text-2xl font-headline font-bold text-primary">Grocy Admin</h1>
               </Link>
             </div>
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
               {Object.keys(TABS).map(tabKey => (
-                 <SidebarMenuItem key={tabKey}>
-                    <SidebarMenuButton 
-                        onClick={() => handleTabChange(tabKey)} 
-                        tooltip={TABS[tabKey].label} 
-                        isActive={activeTab === tabKey}
-                    >
-                        {TABS[tabKey].icon}
-                        <span>{TABS[tabKey].label}</span>
-                    </SidebarMenuButton>
+                <SidebarMenuItem key={tabKey}>
+                  <SidebarMenuButton
+                    onClick={() => handleTabChange(tabKey)}
+                    tooltip={TABS[tabKey].label}
+                    isActive={activeTab === tabKey}
+                  >
+                    {TABS[tabKey].icon}
+                    <span>{TABS[tabKey].label}</span>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
             <SidebarMenu>
-               <SidebarMenuItem>
-                 <SidebarMenuButton asChild tooltip="Log Out">
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Log Out" onClick={handleLogout}>
                   <Link href="/">
                     <LogOut />
                     <span>Log Out</span>
@@ -111,12 +117,12 @@ export function AdminPageClient({ users, recipes, categories, countries }: Admin
           </SidebarFooter>
         </Sidebar>
         <SidebarInset className="p-4 sm:p-6 flex flex-col w-full">
-            <div className="md:hidden pb-4">
-              <SidebarTrigger />
-            </div>
-            <main className="flex-1 w-full">
-                {renderContent()}
-            </main>
+          <div className="md:hidden pb-4">
+            <SidebarTrigger />
+          </div>
+          <main className="flex-1 w-full">
+            {renderContent()}
+          </main>
         </SidebarInset>
       </div>
     </SidebarProvider>
