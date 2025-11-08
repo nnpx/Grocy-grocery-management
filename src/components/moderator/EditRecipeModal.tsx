@@ -87,7 +87,7 @@ export function EditRecipeModal({ isOpen, onClose, onSave, recipe }: EditRecipeM
               <Textarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="cook_time">Cook Time (x min/hr)</Label>
+              <Label htmlFor="cook_time">Cook Time (x min)</Label>
               <Input id="cook_time" value={formData.cook_time} onChange={(e) => handleChange('cook_time', e.target.value)} />
             </div>
             <div className="grid gap-2">

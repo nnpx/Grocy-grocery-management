@@ -16,11 +16,19 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { ChefHat, BookCopy, BarChart3, Home, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function ModeratorLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'recipes';
   const userName = "Moderator";
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('AUTH_TOKEN');
+
+    router.push('/login');
+  };
 
   return (
     <SidebarProvider>
@@ -29,8 +37,8 @@ export default function ModeratorLayout({ children }: { children: ReactNode }) {
           <SidebarHeader>
             <div className="flex items-center gap-3">
               <Link href="/moderator" className="flex items-center gap-2">
-                 <ChefHat className="w-8 h-8 text-primary" />
-                 <h1 className="text-2xl font-headline font-bold text-primary">Grocy Moderator</h1>
+                <ChefHat className="w-8 h-8 text-primary" />
+                <h1 className="text-2xl font-headline font-bold text-primary">Grocy Moderator</h1>
               </Link>
             </div>
           </SidebarHeader>
@@ -56,8 +64,8 @@ export default function ModeratorLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
           <SidebarFooter>
             <SidebarMenu>
-               <SidebarMenuItem>
-                 <SidebarMenuButton asChild tooltip="Log Out">
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Log Out" onClick={handleLogout}>
                   <Link href="/">
                     <LogOut />
                     <span>Log Out</span>
@@ -74,12 +82,12 @@ export default function ModeratorLayout({ children }: { children: ReactNode }) {
           </SidebarFooter>
         </Sidebar>
         <SidebarInset className="p-4 sm:p-6 flex flex-col w-full">
-            <div className="md:hidden pb-4">
-              <SidebarTrigger />
-            </div>
-            <main className="flex-1 w-full">
-                {children}
-            </main>
+          <div className="md:hidden pb-4">
+            <SidebarTrigger />
+          </div>
+          <main className="flex-1 w-full">
+            {children}
+          </main>
         </SidebarInset>
       </div>
     </SidebarProvider>

@@ -75,7 +75,7 @@ export function GroceryItemsClient({
   const [itemToDelete, setItemToDelete] = useState<GroceryItem | null>(null);
   const isMobile = useIsMobile();
 
-  const allCategories = ["All", ...categories]; // ✅ uses API data
+  const allCategories = ["All", ...categories]; // uses API data
 
   // Add this helper above handleAddItem
   async function apiAddItem(newItem: Omit<GroceryItem, "id">) {

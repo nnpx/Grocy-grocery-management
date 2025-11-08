@@ -15,12 +15,77 @@ import {
   SidebarFooter,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChefHat, ShoppingBasket, Heart, BookUser, LogOut, Users, Home } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const userName = "Casey";
+  const router = useRouter();
   const pathname = usePathname();
+
+  const [user, setUser] = useState<{ username: string; email: string } | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = sessionStorage.getItem('AUTH_TOKEN');
+        if (!token) {
+          toast({
+            variant: 'destructive',
+            title: 'Log in Required',
+            description: 'Please log in to view your dashboard.',
+          });
+
+          router.push('/login');
+          return;
+        }
+
+        const res = await fetch('/api/dashboard/user', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Could not fetch user data');
+        }
+
+        setUser({
+          username: data.username,
+          email: data.email
+        });
+
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Could not fetch user info. Please try again later.',
+        });
+      }
+    };
+
+    fetchUserData();
+  }, [toast]);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('AUTH_TOKEN');
+
+    router.push('/login');
+  };
+
+  if (!user) {
+    return (
+      <div className="text-center py-10">
+        Loading user info...
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -29,8 +94,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <SidebarHeader>
             <div className="flex items-center gap-3">
               <Link href="/dashboard" className="flex items-center gap-2">
-                 <ChefHat className="w-8 h-8 text-primary" />
-                 <h1 className="text-2xl font-headline font-bold text-primary">Grocy</h1>
+                <ChefHat className="w-8 h-8 text-primary" />
+                <h1 className="text-2xl font-headline font-bold text-primary">Grocy</h1>
               </Link>
             </div>
           </SidebarHeader>
@@ -80,9 +145,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
           <SidebarFooter>
             <SidebarMenu>
-               <SidebarMenuItem>
-                 <SidebarMenuButton asChild tooltip="Log Out">
-                  <Link href="/">
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Log Out" onClick={handleLogout}>
+                  <Link href="/login">
                     <LogOut />
                     <span>Log Out</span>
                   </Link>
@@ -91,19 +156,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </SidebarMenu>
             <div className="flex items-center gap-3 px-2 py-4">
               <div className="flex flex-col">
-                <span className="text-sm font-semibold">{userName}</span>
-                <span className="text-xs text-muted-foreground">casey@example.com</span>
+                <span className="text-sm font-semibold">{user.username}</span>
+                <span className="text-xs text-muted-foreground">{user.email}</span>
               </div>
             </div>
           </SidebarFooter>
         </Sidebar>
         <SidebarInset className="p-4 sm:p-6 flex flex-col w-full">
-            <div className="md:hidden pb-4">
-              <SidebarTrigger />
-            </div>
-            <main className="flex-1 w-full">
-                {children}
-            </main>
+          <div className="md:hidden pb-4">
+            <SidebarTrigger />
+          </div>
+          <main className="flex-1 w-full">
+            {children}
+          </main>
         </SidebarInset>
       </div>
     </SidebarProvider>

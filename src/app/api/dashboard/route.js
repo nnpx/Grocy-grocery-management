@@ -4,27 +4,17 @@ import { requireRole } from '@/lib/auth';
 
 export async function GET(request) {
   try {
-    // Verify the user's JWT token
-    // const user = verifyToken(request); // Returns decoded user info
     const user = requireRole(request, 'User');
 
     console.log('user: \n', user);
 
-    // Fetch user-specific data from DB
     const db = await getConnection();
 
     const [name] = await db.query('SELECT username FROM users WHERE user_id = ?', [user.user_id]);
     const userName = name[0]?.username
 
-    // Fetch user groceries count (adjust based on your DB schema)
     const [groceries] = await db.query('SELECT COUNT(*) as total FROM user_items WHERE user_id = ?', [user.user_id]);
     const totalGroceries = groceries[0].total;
-
-    // Fetch expiring groceries (this example assumes you have an `expiry_date` field in the `user_items` table)
-    // const [expiringItems] = await db.query(
-    //   'SELECT * FROM user_items WHERE user_id = ? AND expiry_date BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)',
-    //   [user.user_id]
-    // );
 
     const [expiringItems] = await db.query(
       `
@@ -49,7 +39,6 @@ export async function GET(request) {
       [user.user_id]
     );
 
-    // Fetch favorite recipes (assuming you have a `favorites` table linked to `recipes`)
     const [favoriteRecipes] = await db.query(
       'SELECT COUNT(*) as total FROM favorites WHERE user_id = ?',
       [user.user_id]
@@ -85,7 +74,6 @@ export async function GET(request) {
           r.title;
     `;
 
-    // Pass user.user_id three times for the three placeholders: isOwner, isFavorite, ui_filter.user_id
     const [suggestedRecipes] = await db.query(suggestedRecipesSQL, [user.user_id, user.user_id, user.user_id]);
 
     const processedSuggestedRecipes = suggestedRecipes.map(recipe => ({
