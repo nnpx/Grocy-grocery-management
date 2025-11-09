@@ -190,3 +190,29 @@ export async function PUT(request) {
         return jsonError('Internal Server Error: ' + error.message, 500);
     }
 }
+
+
+export async function DELETE(request) {
+    try {
+        const user = requireRole(request, 'Moderator');
+
+        const { id } = await request.json();
+
+        if (!id) {
+            return jsonError('Recipe ID is required.', 422);
+        }
+
+        const db = await getConnection();
+
+        await db.query('DELETE FROM recipes WHERE recipe_id = ?', [id]);
+
+        return jsonOk({ message: 'Recipe deleted successfully.' });
+    } catch (error) {
+        console.error('Delete Recipe API Error:', error.message);
+
+        if (error.message.includes('Unauthorized')) return jsonError(error.message, 401);
+        if (error.message.includes('Forbidden')) return jsonError(error.message, 403);
+
+        return jsonError('Internal Server Error: ' + error.message, 500);
+    }
+}

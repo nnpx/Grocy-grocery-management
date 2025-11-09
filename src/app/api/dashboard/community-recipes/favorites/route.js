@@ -27,14 +27,27 @@ export async function POST(request) {
             return jsonError('Recipe not found.', 404);
         }
 
+        const now = new Date();
+        const nowTst = now.toLocaleString('en-CA', {
+            timeZone: 'Asia/Bangkok',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).replace(/,/, '');
+        console.log('Generated TST string:', nowTst);
+
         if (favorite) {
             // Add to favorites if not already
             await db.query(
                 `
-          INSERT IGNORE INTO favorites (user_id, recipe_id, created_at)
-          VALUES (?, ?, NOW())
-        `,
-                [user.user_id, recipeId]
+                INSERT IGNORE INTO favorites (user_id, recipe_id, created_at)
+                VALUES (?, ?, ?)
+            `,
+                [user.user_id, recipeId, nowTst]
             );
         } else {
             // Remove from favorites

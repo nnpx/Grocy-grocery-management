@@ -62,18 +62,58 @@ export function ModeratorRecipesClient({ recipes: initialRecipes }: ModeratorRec
     setDeleteDialogOpen(true);
   };
 
-  const handleDeleteRecipe = () => {
+  const handleDeleteRecipe = async () => {
     if (!recipeToDelete) return;
-    setRecipes(prev => prev.filter(r => r.id !== recipeToDelete));
-    setSelectedRecipes(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(recipeToDelete!);
-      return newSet;
-    });
-    console.log(`Deleted recipe: ${recipeToDelete}`);
-    toast({ title: "Recipe Deleted", description: `Successfully removed recipe ${recipeToDelete}.` });
-    setDeleteDialogOpen(false);
-    setRecipeToDelete(null);
+
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('AUTH_TOKEN') : null;
+
+    if (!token) {
+      toast({
+        variant: 'destructive',
+        title: 'Log in Required',
+        description: 'You need to be logged in to delete a recipe.',
+      });
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/moderator/recipes', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: recipeToDelete }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        toast({
+          variant: 'destructive',
+          title: 'Error Deleting Recipe',
+          description: data.error || 'Could not delete the recipe.',
+        });
+        return;
+      }
+
+      // If successful, update the recipes in the state (optimistic update)
+      setRecipes(prev => prev.filter(recipe => recipe.id !== recipeToDelete));
+      toast({
+        title: 'Recipe Deleted',
+        description: `The recipe has been deleted successfully.`,
+      });
+
+      setDeleteDialogOpen(false);
+      setRecipeToDelete(null);
+
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Network Error',
+        description: 'Could not connect to the server.',
+      });
+    }
   };
 
   const handleBulkDelete = () => {

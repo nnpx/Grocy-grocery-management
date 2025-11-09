@@ -307,12 +307,25 @@ export async function POST(request) {
         const recipe_category_id = catRows[0].recipe_category_id;
         const recipe_country_id = countryRows[0].recipe_country_id;
 
+        const now = new Date();
+        const nowTst = now.toLocaleString('en-CA', {
+            timeZone: 'Asia/Bangkok',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).replace(/,/, '');
+        console.log('Generated TST string:', nowTst);
+
         // Create new recipe
         const [insertResult] = await db.query(
             `
       INSERT INTO recipes 
         (user_id, title, description, recipe_category_id, recipe_country_id, cook_time, image_url, instructions, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
             [
                 user.user_id,
@@ -323,6 +336,7 @@ export async function POST(request) {
                 cookTime,
                 imageUrl,
                 JSON.stringify(instructions || []),
+                nowTst
             ]
         );
 

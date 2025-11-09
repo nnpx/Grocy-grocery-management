@@ -5,13 +5,16 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import type { Recipe } from '@/lib/types';
 import { RecipeDetailClient } from '@/components/grocy/RecipeDetailClient';
+import React from 'react';
 
 interface RecipeDetailPageProps {
     params: { id: string };
 }
 
 export default function RecipeDetailPage({ params }: RecipeDetailPageProps) {
-    const { id } = params;
+    const resolvedParams = (React as any).use(params as unknown as Promise<{ id: string }>);
+    const { id } = resolvedParams;
+
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [loading, setLoading] = useState(true);
 

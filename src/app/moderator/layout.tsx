@@ -52,14 +52,14 @@ export default function ModeratorLayout({ children }: { children: ReactNode }) {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
+              {/* <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Stats" isActive={activeTab === 'stats'}>
                   <Link href="/moderator?tab=stats">
                     <BarChart3 />
                     <span>Stats</span>
                   </Link>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </SidebarMenuItem> */}
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>

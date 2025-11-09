@@ -127,7 +127,7 @@ export default function DashboardPage() {
     .sort((a, b) => a.status.days - b.status.days);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
       <div>
         <h1 className="text-3xl font-headline font-bold text-foreground">Welcome, {userName}!</h1>
         <p className="text-muted-foreground">Here’s what’s happening in your kitchen today.</p>

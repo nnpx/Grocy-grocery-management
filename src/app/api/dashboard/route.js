@@ -45,33 +45,34 @@ export async function GET(request) {
     );
 
     const suggestedRecipesSQL = `
-      SELECT
-          r.recipe_id AS id,
-          r.title,
-          r.description,
-          rc.name AS category,
-          rco.name AS country,
-          r.cook_time AS cookTime,
-          r.image_url AS imageUrl,
-          r.created_at AS createdAt,
-          u.username AS owner,
-          COUNT(DISTINCT fav.favorite_id) AS totalFavorites,
-          COUNT(CASE WHEN fav.user_id = ? THEN 1 ELSE NULL END) > 0 AS isFavorite,
-          GROUP_CONCAT(DISTINCT item.name SEPARATOR '||') AS ingredientList
-      FROM
-          recipes r
-      JOIN recipe_categories rc ON r.recipe_category_id = rc.recipe_category_id
-      JOIN recipe_countries rco ON r.recipe_country_id = rco.recipe_country_id
-      JOIN recipe_ingredients ri_filter ON r.recipe_id = ri_filter.recipe_id
-      JOIN user_items ui_filter ON ri_filter.item_id = ui_filter.item_id AND ui_filter.user_id = ?
-      JOIN recipe_ingredients ri_all ON r.recipe_id = ri_all.recipe_id
-      JOIN items item ON ri_all.item_id = item.item_id
-      JOIN users u ON r.user_id = u.user_id
-      LEFT JOIN favorites fav ON r.recipe_id = fav.recipe_id
-      GROUP BY
-          r.recipe_id, r.title, r.description, rc.name, rco.name, r.cook_time, r.image_url, r.created_at, r.user_id
-      ORDER BY
-          r.title;
+    SELECT
+        r.recipe_id AS id,
+        r.title,
+        r.description,
+        rc.name AS category,
+        rco.name AS country,
+        r.cook_time AS cookTime,
+        r.image_url AS imageUrl,
+        r.created_at AS createdAt,
+        u.username AS owner,
+        COUNT(DISTINCT fav.favorite_id) AS totalFavorites,
+        COUNT(CASE WHEN fav.user_id = ? THEN 1 ELSE NULL END) > 0 AS isFavorite,
+        GROUP_CONCAT(DISTINCT item.name SEPARATOR '||') AS ingredientList
+    FROM
+        recipes r
+    JOIN recipe_categories rc ON r.recipe_category_id = rc.recipe_category_id
+    JOIN recipe_countries rco ON r.recipe_country_id = rco.recipe_country_id
+    JOIN recipe_ingredients ri ON r.recipe_id = ri.recipe_id
+    JOIN items item ON ri.item_id = item.item_id
+    JOIN users u ON r.user_id = u.user_id
+    LEFT JOIN favorites fav ON r.recipe_id = fav.recipe_id
+    LEFT JOIN user_items ui ON ri.item_id = ui.item_id AND ui.user_id = ?
+    GROUP BY
+        r.recipe_id, r.title, r.description, rc.name, rco.name, r.cook_time, r.image_url, r.created_at, u.username
+    HAVING
+        COUNT(ri.item_id) = COUNT(ui.item_id)
+    ORDER BY
+        r.title;
     `;
 
     const [suggestedRecipes] = await db.query(suggestedRecipesSQL, [user.user_id, user.user_id, user.user_id]);

@@ -19,7 +19,7 @@ import { ChefHat, Users, BookMarked, Globe, LayoutDashboard, LogOut } from 'luci
 import type { User, Recipe, Category, Country } from '@/lib/admin-types';
 import { AdminDashboard } from './AdminDashboard';
 import { UsersManagement } from './UsersManagement';
-import { RecipesManagement } from './RecipesManagement';
+// import { RecipesManagement } from './RecipesManagement';
 import { CategoriesCountriesManagement } from './CategoriesCountriesManagement';
 
 interface AdminPageClientProps {
@@ -32,7 +32,7 @@ interface AdminPageClientProps {
 const TABS: { [key: string]: { icon: ReactNode, label: string, component: ReactNode } } = {
   dashboard: { icon: <LayoutDashboard />, label: 'Dashboard', component: <div>Dashboard Content</div> },
   users: { icon: <Users />, label: 'Users', component: <div>Users Content</div> },
-  recipes: { icon: <BookMarked />, label: 'Recipes', component: <div>Recipes Content</div> },
+  // recipes: { icon: <BookMarked />, label: 'Recipes', component: <div>Recipes Content</div> },
   'categories-countries': { icon: <Globe />, label: 'Categories & Countries', component: <div>Categories & Countries Content</div> },
 };
 
@@ -58,8 +58,8 @@ export function AdminPageClient({ users, recipes, categories, countries }: Admin
         return <AdminDashboard users={users} recipes={recipes} categories={categories} countries={countries} />;
       case 'users':
         return <UsersManagement initialUsers={users} />;
-      case 'recipes':
-        return <RecipesManagement initialRecipes={recipes} allUsers={users} />;
+      // case 'recipes':
+      //   return <RecipesManagement initialRecipes={recipes} allUsers={users} />;
       case 'categories-countries':
         return <CategoriesCountriesManagement initialCategories={categories} initialCountries={countries} recipes={recipes} />;
       default:

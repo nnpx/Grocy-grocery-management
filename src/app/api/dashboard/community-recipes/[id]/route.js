@@ -2,11 +2,13 @@ import { jsonOk, jsonError } from '@/lib/responses';
 import { getConnection } from '@/lib/db';
 import { requireRole } from '@/lib/auth';
 
-export async function GET(request, { params }) {
+export async function GET(request, context) {
     try {
         const user = requireRole(request, 'User');
 
+        const params = await context.params;
         const recipeId = Number(params.id);
+
         if (!recipeId || Number.isNaN(recipeId)) {
             return jsonError('Invalid recipe ID.', 422);
         }
