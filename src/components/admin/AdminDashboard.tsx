@@ -41,11 +41,11 @@ const generateChartData = (items: (User | Recipe)[], days = 14) => {
 
 export function AdminDashboard({ users, recipes, categories, countries }: AdminDashboardProps) {
   const totalUsers = users.length;
-  const totalRecipes = recipes.length;
-  const totalFavorites = recipes.reduce((sum, recipe) => sum + recipe.favorites, 0);
+  // const totalRecipes = recipes.length;
+  // const totalFavorites = recipes.reduce((sum, recipe) => sum + recipe.favorites, 0);
 
   const usersChartData = generateChartData(users);
-  const recipesChartData = generateChartData(recipes);
+  // const recipesChartData = generateChartData(recipes);
 
   const recentActivity = [
     ...users.slice(0, 3).map(u => ({ type: 'user', item: u })),
@@ -53,17 +53,18 @@ export function AdminDashboard({ users, recipes, categories, countries }: AdminD
   ].sort((a, b) => new Date(b.item.dateAdded).getTime() - new Date(a.item.dateAdded).getTime());
 
   return (
-    <div className="space-y-6 w-full">
+    <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       <h1 className="text-3xl font-bold font-headline">Admin Dashboard</h1>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Total Users" value={totalUsers.toString()} icon={<Users className="h-6 w-6 text-primary" />} />
-        <StatCard title="Total Recipes" value={totalRecipes.toString()} icon={<ChefHat className="h-6 w-6 text-primary" />} />
-        <StatCard title="Total Favorites" value={totalFavorites.toString()} icon={<Heart className="h-6 w-6 text-favorite" />} />
-        <StatCard title="Categories & Countries" value={`${categories.length} & ${countries.length}`} icon={<Globe className="h-6 w-10 text-accent" />} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <StatCard title="Total Users" value={totalUsers.toString()} icon={<Users className="h-6 w-10 text-primary" />} />
+        {/* <StatCard title="Total Recipes" value={totalRecipes.toString()} icon={<ChefHat className="h-6 w-6 text-primary" />} /> */}
+        {/* <StatCard title="Total Favorites" value={totalFavorites.toString()} icon={<Heart className="h-6 w-6 text-favorite" />} /> */}
+        <StatCard title="Recipe Categories" value={`${categories.length}`} icon={<Globe className="h-6 w-10 text-accent" />} />
+        <StatCard title="Recipe Countries" value={`${countries.length}`} icon={<Globe className="h-6 w-10 text-accent" />} />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
         <Card className="rounded-2xl">
           <CardHeader>
             <CardTitle>New Users (Last 14 Days)</CardTitle>
@@ -81,7 +82,7 @@ export function AdminDashboard({ users, recipes, categories, countries }: AdminD
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl">
+        {/* <Card className="rounded-2xl">
           <CardHeader>
             <CardTitle>New Recipes (Last 14 Days)</CardTitle>
           </CardHeader>
@@ -97,10 +98,10 @@ export function AdminDashboard({ users, recipes, categories, countries }: AdminD
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
-      <Card className="rounded-2xl">
+      <Card className="rounded-2xl w-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5" />
