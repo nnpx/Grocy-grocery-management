@@ -52,7 +52,6 @@ export default function ModeratorPage({ searchParams }: { searchParams: { tab?: 
 
         if (!response.ok) {
           if (response.status === 401) {
-            // The token is bad, clear it from session storage immediately
             sessionStorage.removeItem('AUTH_TOKEN');
 
             toast({
@@ -61,21 +60,19 @@ export default function ModeratorPage({ searchParams }: { searchParams: { tab?: 
               description: 'Your session has expired. Please log in again.',
             });
           } else if (response.status === 403) {
-            // 403 Forbidden - Role-based access denied
             toast({
               variant: 'destructive',
               title: 'Access Denied',
               description: 'You do not have permission to access this resource.',
             });
           } else {
-            // Handle other server errors (500 Internal, etc.)
             toast({
               variant: 'destructive',
               title: 'Error Loading Dashboard',
               description: result.error || 'Could not load data. Please try again later.',
             });
             setLoading(false);
-            return; // Stop execution if it's a non-auth error
+            return;
           }
 
           setTimeout(() => {
@@ -118,7 +115,7 @@ export default function ModeratorPage({ searchParams }: { searchParams: { tab?: 
   return (
     <>
       {activeTab === 'recipes' && <ModeratorRecipesClient recipes={data.recipes} />}
-      {activeTab === 'stats' && <ModeratorStats stats={mockModeratorStats} />}
+      {/* {activeTab === 'stats' && <ModeratorStats stats={mockModeratorStats} />} */}
     </>
   );
 }
