@@ -16,8 +16,8 @@ interface ModeratorPageClientProps {
     initialTab: string;
 }
 
-export function ModeratorPageClient({ initialTab }: ModeratorPageClientProps) {
-    const [activeTab, setActiveTab] = useState(initialTab || 'recipes');
+export function ModeratorPageClient() {
+    // const [activeTab, setActiveTab] = useState(initialTab || 'recipes');
 
     const [data, setData] = useState<ModeratorData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -118,7 +118,8 @@ export function ModeratorPageClient({ initialTab }: ModeratorPageClientProps) {
 
     return (
         <>
-            {activeTab === 'recipes' && <ModeratorRecipesClient recipes={data.recipes} />}
+            {<ModeratorRecipesClient recipes={data.recipes} />}
+            {/* {activeTab === 'recipes' && <ModeratorRecipesClient recipes={data.recipes} />} */}
             {/* {activeTab === 'stats' && <ModeratorStats stats={mockModeratorStats} />} */}
         </>
     );
