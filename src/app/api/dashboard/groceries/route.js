@@ -41,13 +41,11 @@ export async function GET(request) {
     if (search) values.push(`%${search}%`);
 
     const [items] = await db.query(query, values);
-    console.log("Fetched items:", items);
 
-    // fetch categories from DB
     const [categoryRows] = await db.query(
       "SELECT name FROM item_categories ORDER BY name ASC",
     );
-    const categories = categoryRows.map((row) => row.name); // e.g. ["Bakery", "Dairy", "Meat", "Produce", "Snacks"]
+    const categories = categoryRows.map((row) => row.name);
 
     return jsonOk({ items, categories });
   } catch (error) {
@@ -58,10 +56,8 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    // 1) Auth
     const user = requireRole(request, "User");
 
-    // 2) Read + validate body
     const { name, category, quantity, expiryDate } = await request.json();
 
     if (!name || !category || quantity == null || !expiryDate) {
@@ -70,14 +66,12 @@ export async function POST(request) {
     if (!Number.isFinite(Number(quantity)) || Number(quantity) <= 0) {
       return jsonError("Quantity must be a positive number", 400);
     }
-    // Very simple date guard (yyyy-mm-dd)
     if (!/^\d{4}-\d{2}-\d{2}$/.test(expiryDate)) {
       return jsonError("expiryDate must be 'YYYY-MM-DD'", 400);
     }
 
     const db = await getConnection();
 
-    // 3) Resolve category -> item_category_id
     const [catRows] = await db.query(
       "SELECT item_category_id FROM item_categories WHERE name = ?",
       [category],
@@ -87,73 +81,66 @@ export async function POST(request) {
     }
     const categoryId = catRows[0].item_category_id;
 
-    // 4) Resolve (or create) item -> item_id
-    //    We assume (name, item_category_id) identifies an item.
-    let itemId;
-    const [itemRows] = await db.query(
-      "SELECT item_id FROM items WHERE name = ? AND item_category_id = ?",
-      [name, categoryId],
-    );
-    if (itemRows.length > 0) {
-      itemId = itemRows[0].item_id;
-    } else {
-      const [insItem] = await db.query(
-        "INSERT INTO items (name, item_category_id) VALUES (?, ?)",
-        [name, categoryId],
-      );
-      itemId = insItem.insertId;
-    }
+    await db.query("CALL add_grocery_item_by_name(?, ?, ?, ?, ?)", [
+      user.user_id,
+      name,
+      categoryId,
+      Number(quantity),
+      expiryDate,
+    ]);
 
-    // 5) Insert into user_items using item_id (not name)
-    //    MySQL will accept 'YYYY-MM-DD' for a DATE column
-    const [insUserItem] = await db.query(
-      "INSERT INTO user_items (user_id, item_id, quantity, expiry_date) VALUES (?, ?, ?, ?)",
-      [user.user_id, itemId, Number(quantity), expiryDate],
+    const [rows] = await db.query(
+      `
+      SELECT
+        ui.user_item_id AS id,
+        ui.quantity,
+        DATE_FORMAT(ui.expiry_date, '%Y-%m-%d') AS expiryDate,
+        i.name,
+        ic.name AS category
+      FROM user_items ui
+      JOIN items i ON ui.item_id = i.item_id
+      JOIN item_categories ic ON i.item_category_id = ic.item_category_id
+      WHERE ui.user_id = ?
+        AND i.name = ?
+        AND ic.item_category_id = ?
+        AND ui.expiry_date = ?
+      ORDER BY ui.user_item_id DESC
+      LIMIT 1
+      `,
+      [user.user_id, name, categoryId, expiryDate],
     );
 
-    // 6) Return minimal info needed to update UI
+    const item = rows[0];
+
     return jsonOk({
       message: "Item added successfully",
-      userItemId: insUserItem.insertId,
-      item: {
-        id: insUserItem.insertId, // for your UI list
-        name,
-        category,
-        quantity: Number(quantity),
-        expiryDate, // 'YYYY-MM-DD'
-      },
+      item,
     });
   } catch (error) {
     console.error("Groceries POST error:", error);
-    if (error.message?.includes("Unauthorized")) {
+    if (error.message?.includes("Unauthorized"))
       return jsonError(error.message, 401);
-    }
-    if (error.message?.includes("Forbidden")) {
+    if (error.message?.includes("Forbidden"))
       return jsonError(error.message, 403);
-    }
     return jsonError("Internal Server Error: " + error.message, 500);
   }
 }
 
 export async function PUT(request) {
   try {
-    // Verify the user's JWT token and role
     const user = requireRole(request, "User");
 
-    // Parse the incoming request body
     const { id, name, category, quantity, expiryDate } = await request.json();
 
     if (!id || !name || !category || quantity == null || !expiryDate) {
       return jsonError("Missing required fields", 400);
     }
-
     if (Number(quantity) <= 0) {
       return jsonError("Quantity must be greater than 0", 400);
     }
 
     const db = await getConnection();
 
-    // Get category ID
     const [catRows] = await db.query(
       "SELECT item_category_id FROM item_categories WHERE name = ?",
       [category],
@@ -163,7 +150,6 @@ export async function PUT(request) {
     }
     const categoryId = catRows[0].item_category_id;
 
-    // Find the item_id from this user_item_id
     const [itemRows] = await db.query(
       "SELECT item_id FROM user_items WHERE user_item_id = ? AND user_id = ?",
       [id, user.user_id],
@@ -173,13 +159,11 @@ export async function PUT(request) {
     }
     const itemId = itemRows[0].item_id;
 
-    // 1️⃣ Update the item’s name/category in items table
     await db.query(
       "UPDATE items SET name = ?, item_category_id = ? WHERE item_id = ?",
       [name, categoryId, itemId],
     );
 
-    // 2️⃣ Update the user-specific fields
     const [res] = await db.query(
       "UPDATE user_items SET quantity = ?, expiry_date = ? WHERE user_item_id = ? AND user_id = ?",
       [Number(quantity), expiryDate, id, user.user_id],
@@ -188,15 +172,6 @@ export async function PUT(request) {
     if (res.affectedRows === 0) {
       return jsonError("No changes made or item not found", 404);
     }
-
-    console.log("🟩 Updated grocery item:", {
-      user_item_id: id,
-      item_id: itemId,
-      name,
-      category,
-      quantity,
-      expiryDate,
-    });
 
     return jsonOk({
       message: "Item updated successfully",
@@ -220,10 +195,8 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   try {
-    // Verify the user's JWT token and role
     const user = requireRole(request, "User");
 
-    // Get the request body for deleting a grocery item
     const { id } = await request.json();
 
     if (!id) {
@@ -232,7 +205,6 @@ export async function DELETE(request) {
 
     const db = await getConnection();
 
-    // Check if the item exists for the user before deleting
     const [checkItem] = await db.query(
       "SELECT user_item_id FROM user_items WHERE user_item_id = ? AND user_id = ?",
       [id, user.user_id],
@@ -245,7 +217,6 @@ export async function DELETE(request) {
       );
     }
 
-    // Delete the item from the `user_items` table
     const [result] = await db.query(
       "DELETE FROM user_items WHERE user_item_id = ? AND user_id = ?",
       [id, user.user_id],

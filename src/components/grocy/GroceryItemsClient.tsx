@@ -77,7 +77,6 @@ export function GroceryItemsClient({
 
   const allCategories = ["All", ...categories]; // uses API data
 
-  // Add this helper above handleAddItem
   async function apiAddItem(newItem: Omit<GroceryItem, "id">) {
     const token = sessionStorage.getItem("AUTH_TOKEN");
     console.log("🟦 Sending Add Item request:", newItem);
@@ -138,12 +137,25 @@ export function GroceryItemsClient({
     return data.message;
   }
 
-  // Then replace your old handleAddItem with this:
   const handleAddItem = async (newItem: Omit<GroceryItem, "id">) => {
     try {
       const created = await apiAddItem(newItem);
-      console.log("✅ Added new item successfully:", created);
-      setItems((prev) => [...prev, created]);
+      console.log("✅ Added/updated item:", created);
+
+      setItems((prev) => {
+        // identify the logical same row: same name + category + expiryDate
+        const filtered = prev.filter(
+          (i) =>
+            !(
+              i.name === created.name &&
+              i.category === created.category &&
+              i.expiryDate === created.expiryDate
+            ),
+        );
+
+        return [...filtered, created];
+      });
+
       setAddModalOpen(false);
     } catch (e: any) {
       console.error("❌ Add item failed:", e.message);
@@ -165,7 +177,6 @@ export function GroceryItemsClient({
     if (!itemToDelete) return;
 
     try {
-      // Call the DELETE API
       const message = await apiDeleteItem(itemToDelete.id);
       console.log("✅ Deleted item:", message);
 
@@ -175,7 +186,6 @@ export function GroceryItemsClient({
       setDeleteConfirmOpen(false);
     } catch (e: any) {
       console.error("❌ Delete failed:", e.message);
-      // Optionally, show an error message to the user via toast
     }
   };
 
