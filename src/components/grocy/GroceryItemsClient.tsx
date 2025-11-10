@@ -1,5 +1,5 @@
 "use client";
-
+import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import type { GroceryItem } from "@/lib/types";
 import { Input } from "@/components/ui/input";
@@ -64,6 +64,7 @@ export function GroceryItemsClient({
   items: initialItems,
   categories,
 }: GroceryItemsClientProps) {
+  const { toast } = useToast();
   const [items, setItems] = useState<GroceryItem[]>(initialItems);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
@@ -156,9 +157,20 @@ export function GroceryItemsClient({
         return [...filtered, created];
       });
 
+      toast({
+        title: "Item added successfully",
+        description: `"${created.name}" has been saved to your groceries.`,
+        className: "bg-green-500 text-white border-none",
+      });
+
       setAddModalOpen(false);
     } catch (e: any) {
       console.error("❌ Add item failed:", e.message);
+      toast({
+        variant: "destructive",
+        title: "Failed to add item",
+        description: e.message || "Please try again.",
+      });
     }
   };
 
