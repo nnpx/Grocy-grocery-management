@@ -1,9 +1,9 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { ChefHat, ListChecks, Heart, Users } from 'lucide-react';
-import Image from 'next/image';
-import { RecipeCard } from '@/components/grocy/RecipeCard';
-import { mockRecipes } from '@/lib/mock-data';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ChefHat, ListChecks, Heart, Users } from "lucide-react";
+import Image from "next/image";
+import { RecipeCard } from "@/components/grocy/RecipeCard";
+import { mockRecipes } from "@/lib/mock-data";
 
 export default function LandingPage() {
   const communityRecipes = mockRecipes.slice(0, 6);
@@ -11,20 +11,40 @@ export default function LandingPage() {
   return (
     <div className="bg-background font-body text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6">
+      <header className="top-0 z-40 sticky bg-background/80 backdrop-blur-sm">
+        <div className="flex justify-between items-center mx-auto px-4 sm:px-6 h-20 container">
           <Link href="/" className="flex items-center gap-2">
-            <ChefHat className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold font-headline text-primary">Grocy</span>
+            <ChefHat className="w-8 h-8 text-primary" />
+            <span className="font-headline font-bold text-primary text-2xl">
+              Grocy
+            </span>
           </Link>
-          <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
-            <Link href="/" className="text-foreground/80 transition-colors hover:text-accent">Home</Link>
-            <Link href="/dashboard/recipes" className="text-foreground/80 transition-colors hover:text-accent">Community Recipes</Link>
-            <Link href="/login" className="text-foreground/80 transition-colors hover:text-accent">Login</Link>
+          <nav className="hidden md:flex items-center gap-6 font-medium text-sm">
+            <Link
+              href="/"
+              className="text-foreground/80 hover:text-accent transition-colors"
+            >
+              Home
+            </Link>
+            <Link
+              href="/dashboard/recipes"
+              className="text-foreground/80 hover:text-accent transition-colors"
+            >
+              Community Recipes
+            </Link>
+            <Link
+              href="/login"
+              className="text-foreground/80 hover:text-accent transition-colors"
+            >
+              Login
+            </Link>
           </nav>
           <div className="flex items-center gap-4">
-             <Button asChild className="hidden md:flex tracking-wide uppercase hover:bg-accent/90">
-                <Link href="/signup">Sign Up</Link>
+            <Button
+              asChild
+              className="hidden md:flex hover:bg-accent/90 uppercase tracking-wide"
+            >
+              <Link href="/signup">Sign Up</Link>
             </Button>
             <Button asChild variant="ghost" className="md:hidden">
               <Link href="/dashboard">Dashboard</Link>
@@ -33,33 +53,42 @@ export default function LandingPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 sm:px-6">
+      <main className="mx-auto px-4 sm:px-6 container">
         {/* Hero Section */}
-        <section className="py-20 text-center sm:py-32">
+        <section className="py-20 sm:py-32 text-center">
           <div className="mx-auto max-w-3xl">
-            <h1 className="text-4xl font-bold font-headline tracking-tight text-foreground sm:text-6xl">
-              Smarter Grocery Management. <span className="text-accent">Delicious</span> Recipe Inspiration.
+            <h1 className="font-headline font-bold text-foreground text-4xl sm:text-6xl tracking-tight">
+              Smarter Grocery Management.{" "}
+              <span className="text-accent">Delicious</span> Recipe Inspiration.
             </h1>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              Track groceries, avoid waste, and explore community-shared recipes — all in one place.
+            <p className="mt-6 text-muted-foreground text-lg leading-8">
+              Track groceries, avoid waste, and explore community-shared recipes
+              — all in one place.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button asChild size="lg" className="tracking-wide uppercase hover:bg-accent/90">
+            <div className="flex justify-center items-center gap-x-6 mt-10">
+              <Button
+                asChild
+                size="lg"
+                className="hover:bg-accent/90 uppercase tracking-wide"
+              >
                 <Link href="/signup">Get Started</Link>
               </Button>
-              <Link href="/login" className="text-sm font-semibold leading-6 text-foreground/80 hover:text-accent">
+              <Link
+                href="/login"
+                className="font-semibold text-foreground/80 hover:text-accent text-sm leading-6"
+              >
                 Log in <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>
-           <div className="mt-16 flow-root sm:mt-24">
-            <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
-              <Image 
-                src="https://picsum.photos/seed/326/1200/600" 
+          <div className="flow-root mt-16 sm:mt-24">
+            <div className="bg-gray-900/5 -m-2 lg:-m-4 p-2 lg:p-4 rounded-xl lg:rounded-2xl ring-1 ring-gray-900/10 ring-inset">
+              <Image
+                src="https://ichef.bbci.co.uk/food/ic/food_16x9_1600/recipes/chicken_and_seafood_62744_16x9.jpg"
                 alt="A vibrant display of fresh groceries and prepared meals, showcasing the possibilities with Grocy."
                 width={1200}
                 height={600}
-                className="w-full rounded-lg shadow-2xl ring-1 ring-gray-900/10 object-cover"
+                className="shadow-2xl rounded-lg ring-1 ring-gray-900/10 w-full object-cover"
                 data-ai-hint="vibrant groceries meals"
               />
             </div>
@@ -69,27 +98,42 @@ export default function LandingPage() {
         {/* Features Section */}
         <section className="py-20 sm:py-32">
           <div className="mx-auto max-w-7xl">
-            <div className="grid grid-cols-1 gap-12 text-center md:grid-cols-3 md:gap-8">
+            <div className="gap-12 md:gap-8 grid grid-cols-1 md:grid-cols-3 text-center">
               <div className="flex flex-col items-center">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10 text-accent">
-                  <ListChecks className="h-8 w-8" />
+                <div className="flex justify-center items-center bg-accent/10 mb-4 rounded-2xl w-16 h-16 text-accent">
+                  <ListChecks className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold font-headline">Track Your Groceries</h3>
-                <p className="mt-2 text-muted-foreground">Add items, set expiry dates, and always know what's in your pantry.</p>
+                <h3 className="font-headline font-bold text-xl">
+                  Track Your Groceries
+                </h3>
+                <p className="mt-2 text-muted-foreground">
+                  Add items, set expiry dates, and always know what's in your
+                  pantry.
+                </p>
               </div>
               <div className="flex flex-col items-center">
-                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10 text-accent">
-                  <ChefHat className="h-8 w-8" />
+                <div className="flex justify-center items-center bg-accent/10 mb-4 rounded-2xl w-16 h-16 text-accent">
+                  <ChefHat className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold font-headline">Get Recipe Suggestions</h3>
-                <p className="mt-2 text-muted-foreground">Discover delicious recipes based on the ingredients you already have at home.</p>
+                <h3 className="font-headline font-bold text-xl">
+                  Get Recipe Suggestions
+                </h3>
+                <p className="mt-2 text-muted-foreground">
+                  Discover delicious recipes based on the ingredients you
+                  already have at home.
+                </p>
               </div>
               <div className="flex flex-col items-center">
-                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10 text-accent">
-                  <Heart className="h-8 w-8" />
+                <div className="flex justify-center items-center bg-accent/10 mb-4 rounded-2xl w-16 h-16 text-accent">
+                  <Heart className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold font-headline">Save Your Favorites</h3>
-                <p className="mt-2 text-muted-foreground">Keep a personal collection of the recipes you love and want to make again.</p>
+                <h3 className="font-headline font-bold text-xl">
+                  Save Your Favorites
+                </h3>
+                <p className="mt-2 text-muted-foreground">
+                  Keep a personal collection of the recipes you love and want to
+                  make again.
+                </p>
               </div>
             </div>
           </div>
@@ -97,36 +141,51 @@ export default function LandingPage() {
 
         {/* Community Highlight Section */}
         <section className="py-20 sm:py-32">
-            <div className="text-center">
-                <h2 className="text-3xl font-bold font-headline text-foreground sm:text-4xl">From Our Community Kitchen</h2>
-                <p className="mt-4 text-lg text-muted-foreground">Explore tasty <span className="text-accent font-semibold">recipes</span> shared by food lovers like you.</p>
-            </div>
-            <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {communityRecipes.map(recipe => (
-                    <RecipeCard key={recipe.id} recipe={recipe} />
-                ))}
-            </div>
-            <div className="mt-12 text-center">
-                <Button asChild size="lg" variant="outline" className="tracking-wide uppercase hover:bg-accent/10 hover:border-accent hover:text-accent">
-                    <Link href="/dashboard/recipes">Browse More Recipes</Link>
-                </Button>
-            </div>
+          <div className="text-center">
+            <h2 className="font-headline font-bold text-foreground text-3xl sm:text-4xl">
+              From Our Community Kitchen
+            </h2>
+            <p className="mt-4 text-muted-foreground text-lg">
+              Explore tasty{" "}
+              <span className="font-semibold text-accent">recipes</span> shared
+              by food lovers like you.
+            </p>
+          </div>
+          <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-12">
+            {communityRecipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </div>
+          <div className="mt-12 text-center">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="hover:bg-accent/10 hover:border-accent hover:text-accent uppercase tracking-wide"
+            >
+              <Link href="/dashboard/recipes">Browse More Recipes</Link>
+            </Button>
+          </div>
         </section>
 
         {/* CTA Section */}
         <section className="py-20 sm:py-32">
           <div className="relative mx-auto max-w-2xl text-center">
-             <div className="absolute inset-x-0 top-1/2 -z-10 flex -translate-y-1/2 justify-center overflow-hidden">
-                <div
-                    className="h-[20rem] w-[50rem] flex-none -translate-x-1/2 rounded-full bg-accent/20 opacity-50 blur-3xl"
-                    aria-hidden="true"
-                />
+            <div className="top-1/2 -z-10 absolute inset-x-0 flex justify-center overflow-hidden -translate-y-1/2">
+              <div
+                className="flex-none bg-accent/20 opacity-50 blur-3xl rounded-full w-[50rem] h-[20rem] -translate-x-1/2"
+                aria-hidden="true"
+              />
             </div>
-            <h2 className="text-3xl font-bold font-headline tracking-tight text-foreground sm:text-4xl">
+            <h2 className="font-headline font-bold text-foreground text-3xl sm:text-4xl tracking-tight">
               Ready to waste less and cook more?
             </h2>
             <div className="mt-10">
-              <Button asChild size="lg" className="tracking-wide uppercase hover:bg-accent/90">
+              <Button
+                asChild
+                size="lg"
+                className="hover:bg-accent/90 uppercase tracking-wide"
+              >
                 <Link href="/signup">Sign Up Free</Link>
               </Button>
             </div>
@@ -136,12 +195,29 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 sm:px-6 md:flex-row">
-          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Grocy. All rights reserved.</p>
+        <div className="flex md:flex-row flex-col justify-between items-center gap-4 mx-auto px-4 sm:px-6 py-8 container">
+          <p className="text-muted-foreground text-sm">
+            &copy; {new Date().getFullYear()} Grocy. All rights reserved.
+          </p>
           <div className="flex gap-6 text-sm">
-            <Link href="/about" className="text-muted-foreground transition-colors hover:text-accent">About</Link>
-            <Link href="/contact" className="text-muted-foreground transition-colors hover:text-accent">Contact</Link>
-            <Link href="/privacy" className="text-muted-foreground transition-colors hover:text-accent">Privacy Policy</Link>
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-accent transition-colors"
+            >
+              About
+            </Link>
+            <Link
+              href="/contact"
+              className="text-muted-foreground hover:text-accent transition-colors"
+            >
+              Contact
+            </Link>
+            <Link
+              href="/privacy"
+              className="text-muted-foreground hover:text-accent transition-colors"
+            >
+              Privacy Policy
+            </Link>
           </div>
         </div>
       </footer>
