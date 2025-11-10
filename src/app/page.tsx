@@ -26,12 +26,12 @@ export default function LandingPage() {
             >
               Home
             </Link>
-            <Link
+            {/* <Link
               href="/dashboard/recipes"
               className="text-foreground/80 hover:text-accent transition-colors"
             >
               Community Recipes
-            </Link>
+            </Link> */}
             <Link
               href="/login"
               className="text-foreground/80 hover:text-accent transition-colors"
