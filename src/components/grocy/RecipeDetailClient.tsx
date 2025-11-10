@@ -26,10 +26,10 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
           </Link>
         </Button>
         <div className="text-center flex-1">
-             <h1 className="text-2xl md:text-3xl font-bold font-headline">{recipe.title}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold font-headline">{recipe.title}</h1>
         </div>
         <div className="flex items-center gap-2">
-            <FavoriteButton recipe={recipe} />
+          <FavoriteButton recipe={recipe} />
         </div>
       </div>
 
@@ -42,15 +42,15 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
             objectFit="cover"
             data-ai-hint="food recipe details"
           />
-           <div className="absolute bottom-4 left-4 flex gap-2">
-                <Badge className="text-sm py-1 px-3 bg-background/80 text-foreground backdrop-blur-sm">{recipe.category}</Badge>
-                <Badge className="text-sm py-1 px-3 bg-background/80 text-foreground backdrop-blur-sm flex items-center gap-1">
-                    <Globe className="w-4 h-4" /> {recipe.country}
-                </Badge>
-            </div>
+          <div className="absolute bottom-4 left-4 flex gap-2">
+            <Badge className="text-sm py-1 px-3 bg-background/80 text-foreground backdrop-blur-sm">{recipe.category}</Badge>
+            <Badge className="text-sm py-1 px-3 bg-background/80 text-foreground backdrop-blur-sm flex items-center gap-1">
+              <Globe className="w-4 h-4" /> {recipe.country}
+            </Badge>
+          </div>
         </div>
       </Card>
-      
+
       <div className="grid md:grid-cols-3 gap-6">
         <Card className="md:col-span-1">
           <CardHeader>
@@ -58,14 +58,14 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
           </CardHeader>
           <CardContent className="space-y-4 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
-                <ChefHat className="w-5 h-5 text-primary" />
-                <span>Created by <span className="font-semibold text-foreground">Grocy Community</span></span>
+              <ChefHat className="w-5 h-5 text-primary" />
+              <span>Created by <span className="font-semibold text-foreground">{recipe.owner}</span></span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="w-5 h-5 text-primary" />
-                <span>Cook time: <span className="font-semibold text-foreground">45 minutes</span></span>
+              <Clock className="w-5 h-5 text-primary" />
+              <span>Cook time: <span className="font-semibold text-foreground">{recipe.cookTime}</span></span>
             </div>
-             <Separator />
+            <Separator />
             <p className="text-muted-foreground leading-relaxed">
               {recipe.description || `A delicious and easy-to-make ${recipe.title} recipe that is perfect for any occasion. This ${recipe.category} dish from ${recipe.country} will surely impress your friends and family.`}
             </p>
@@ -73,7 +73,7 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
         </Card>
 
         <Card className="md:col-span-2">
-           <CardHeader>
+          <CardHeader>
             <CardTitle>Ingredients</CardTitle>
           </CardHeader>
           <CardContent>
@@ -96,42 +96,42 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
           <CardTitle>Instructions</CardTitle>
         </CardHeader>
         <CardContent>
-            <ol className="space-y-6 list-decimal list-inside">
-                {(recipe.instructions && recipe.instructions.length > 0) ? recipe.instructions.map((step, index) => (
-                    <li key={index}>
-                        <p className="text-muted-foreground pl-2">
-                            {step}
-                        </p>
-                    </li>
-                )) : (
-                <>
-                  <li>
-                      <h4 className="font-semibold mb-2">Preparation</h4>
-                      <p className="text-muted-foreground pl-2">
-                          Gather all your ingredients. Wash and chop the vegetables as needed. Preheat your oven to 375°F (190°C).
-                      </p>
-                  </li>
-                  <li>
-                      <h4 className="font-semibold mb-2">Cooking</h4>
-                      <p className="text-muted-foreground pl-2">
-                          In a large skillet, heat olive oil over medium-high heat. Add the main protein and cook until browned. Add the vegetables and cook until tender.
-                      </p>
-                  </li>
-                  <li>
-                      <h4 className="font-semibold mb-2">Combine</h4>
-                      <p className="text-muted-foreground pl-2">
-                          Stir in the spices and sauces. Bring to a simmer and let it cook for 10-15 minutes to allow the flavors to meld together.
-                      </p>
-                  </li>
-                  <li>
-                      <h4 className="font-semibold mb-2">Serve</h4>
-                      <p className="text-muted-foreground pl-2">
-                          Serve hot with your favorite side dish, such as rice or a fresh salad. Garnish with fresh herbs before serving. Enjoy your delicious homemade meal!
-                      </p>
-                  </li>
-                </>
-                )}
-            </ol>
+          <ol className="space-y-6 list-decimal list-inside">
+            {(recipe.instructions && recipe.instructions.length > 0) ? recipe.instructions.map((step, index) => (
+              <li key={index}>
+                <p className="text-muted-foreground pl-2">
+                  {step}
+                </p>
+              </li>
+            )) : (
+              <>
+                <li>
+                  <h4 className="font-semibold mb-2">Preparation</h4>
+                  <p className="text-muted-foreground pl-2">
+                    Gather all your ingredients. Wash and chop the vegetables as needed. Preheat your oven to 375°F (190°C).
+                  </p>
+                </li>
+                <li>
+                  <h4 className="font-semibold mb-2">Cooking</h4>
+                  <p className="text-muted-foreground pl-2">
+                    In a large skillet, heat olive oil over medium-high heat. Add the main protein and cook until browned. Add the vegetables and cook until tender.
+                  </p>
+                </li>
+                <li>
+                  <h4 className="font-semibold mb-2">Combine</h4>
+                  <p className="text-muted-foreground pl-2">
+                    Stir in the spices and sauces. Bring to a simmer and let it cook for 10-15 minutes to allow the flavors to meld together.
+                  </p>
+                </li>
+                <li>
+                  <h4 className="font-semibold mb-2">Serve</h4>
+                  <p className="text-muted-foreground pl-2">
+                    Serve hot with your favorite side dish, such as rice or a fresh salad. Garnish with fresh herbs before serving. Enjoy your delicious homemade meal!
+                  </p>
+                </li>
+              </>
+            )}
+          </ol>
         </CardContent>
       </Card>
 
